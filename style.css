@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #000;
+  background: #050505; /* Base color now on body, but z-index will handle layers */
   color: #fff;
   font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,7 +24,7 @@ body::before {
   background-size: 40px 40px, 40px 40px, 100% 100%, 200px 200px;
   opacity: 0.08; /* Increased for impact */
   pointer-events: none;
-  z-index: 100;
+  z-index: -1; /* Above gears, below content */
 }
 
 /* ── 3D canvas fills everything ── */
@@ -32,7 +32,7 @@ body::before {
   position: fixed;
   inset: 0;
   width: 100vw; height: 100vh;
-  z-index: 0;
+  z-index: -2; /* Absolute back layer */
 }
 
 /* ── CV panel — right 42%, no background box ── */
@@ -587,18 +587,58 @@ body.revealed .side-motto {
 /* ── Responsive ── */
 @media (max-width: 800px) {
   .side-motto {
-    left: 24px;
-    bottom: 58vh;
-    font-size: 0.6rem;
-    letter-spacing: 0.5em;
-    z-index: 50; /* Above the dark gradient */
+    display: none;
   }
-  .lofi-widget { top: 15px; left: 15px; }
+  
+  .lofi-widget { 
+    top: 12px; 
+    left: 12px; 
+    transform: scale(0.85); 
+    transform-origin: top left;
+  }
+
   .cv-panel {
     width: 100%;
-    padding: 40px 24px;
-    top: auto; bottom: 0;
-    height: 55vh;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 60%, transparent);
+    padding: 80px 24px 120px 24px;
+    top: 0; 
+    left: 0;
+    height: 100vh;
+    /* Ultra-transparent overlay to keep gears clearly visible */
+    background: rgba(5,5,5,0.4);
+    backdrop-filter: blur(2px);
+    -webkit-mask-image: none;
+    mask-image: none;
   }
+
+  .cv-header {
+    flex-direction: column-reverse; /* Text on top of Avatar on mobile */
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .cv-header-text {
+    width: 100%;
+  }
+
+  .cv-avatar {
+    width: 120px;
+    height: 170px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(255,255,255,0.05);
+  }
+
+  .cv-contacts {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+
+  .overlay-content {
+    max-width: 90%;
+    padding: 32px 20px;
+  }
+
+  .overlay-title { letter-spacing: 0.3em; }
+  .overlay-msg { font-size: 0.95rem; }
 }

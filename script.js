@@ -122,9 +122,23 @@
   computeMesh(1, 3);  // G1 drives G3
 
   // ── Build cluster ─────────────────────────────────────
-  const cluster = new THREE.Group();
-  cluster.position.set(-210, -15, 0);
-  scene.add(cluster);
+  let cluster;
+  function initGears() {
+    cluster = new THREE.Group();
+    
+    // Responsive 3D adjustments
+    const isMobile = window.innerWidth < 800;
+    if (isMobile) {
+      cluster.position.set(0, 0, 0); // Centered on mobile
+      cluster.scale.set(0.8, 0.8, 0.8); // Smaller scale
+    } else {
+      cluster.position.set(-210, -15, 0); // Original desktop offset
+      cluster.scale.set(1, 1, 1);
+    }
+    
+    scene.add(cluster);
+  }
+  initGears();
 
   const gearMeshes = gears.map(g => {
     const obj = createGear(g.T, g.R, g.depth);
