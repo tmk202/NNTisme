@@ -370,7 +370,7 @@ body.revealed .lofi-widget {
 .fade-in {
   opacity: 0;
   transform: translateY(16px);
-  animation: fadeUp 0.8s ease forwards;
+  animation: fadeUp 2.5s ease forwards;
   animation-delay: var(--delay, 0s);
 }
 
