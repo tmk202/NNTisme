@@ -185,7 +185,7 @@
     // Camera parallax + scroll depth
     camera.position.x += ((-110 + mx) - camera.position.x) * 0.03;
     camera.position.y += ((20 - my) - camera.position.y) * 0.03;
-    camera.position.z += ((280 - scrollPct * 40) - camera.position.z) * 0.05;
+    camera.position.z += ((280 - scrollPct * 150) - camera.position.z) * 0.04;
     camera.lookAt(-130, 0, 0);
 
     // ── ABSOLUTE gear rotation (guarantees perfect meshing) ──

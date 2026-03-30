@@ -10,13 +10,19 @@ body {
   position: relative;
 }
 
-/* ── Grain Overlay ── */
+/* ── Technical Background Textures ── */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.04;
+  /* Layers: Grid + Vignette + Grain */
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px),
+    radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 40px 40px, 40px 40px, 100% 100%, 200px 200px;
+  opacity: 0.08; /* Increased for impact */
   pointer-events: none;
   z-index: 100;
 }
@@ -73,6 +79,31 @@ body.revealed .cv-panel {
 }
 body.revealed .lofi-widget {
   opacity: 1;
+}
+
+/* ── Side Motto ── */
+/* ── Side Motto ── */
+.side-motto {
+  position: fixed;
+  left: 25%;
+  bottom: 60px;
+  transform: translateX(-50%) translateY(20px);
+  font-family: "Geist", monospace;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.8em;
+  color: rgba(255,255,255,0.6);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 1.5s 1.2s ease, transform 1.5s 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  white-space: nowrap;
+}
+
+body.revealed .side-motto {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .cv-panel::-webkit-scrollbar { display: none; }
@@ -445,19 +476,15 @@ body.revealed .lofi-widget {
 #experience-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5,5,5,0.9);
+  background: rgba(5,5,5,0.95); /* Slightly darker for absolute coverage */
   backdrop-filter: blur(16px);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.4,0,0.2,1);
-  animation: overlayIn 0.6s ease both;
 }
-@keyframes overlayIn {
-  from { opacity:0; transform: scale(1.02); }
-  to   { opacity:1; transform: scale(1); }
-}
+/* Removed overlayIn keyframes to prevent flash */
 #experience-overlay.hidden {
   opacity: 0;
   pointer-events: none;
@@ -559,6 +586,13 @@ body.revealed .lofi-widget {
 
 /* ── Responsive ── */
 @media (max-width: 800px) {
+  .side-motto {
+    left: 24px;
+    bottom: 58vh;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    z-index: 50; /* Above the dark gradient */
+  }
   .lofi-widget { top: 15px; left: 15px; }
   .cv-panel {
     width: 100%;
