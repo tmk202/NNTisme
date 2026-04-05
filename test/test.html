@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monstera 2.5D Test</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #111; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script type="module">
+// Monstera 2.5D using Three.js
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 2, 5);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// Light
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 10, 5);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404040));
+
+// Helper function to create a leaf (2.5D plane with shape)
+function createLeaf() {
+    const shape = new THREE.Shape();
+
+    shape.moveTo(0, 0);
+    shape.bezierCurveTo(0.5, 1.5, 1.5, 1.5, 2, 0);
+    shape.bezierCurveTo(1.5, -1.5, 0.5, -1.5, 0, 0);
+
+    const geometry = new THREE.ShapeGeometry(shape);
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x2ecc71,
+        side: THREE.DoubleSide
+    });
+
+    const leaf = new THREE.Mesh(geometry, material);
+
+    // fake depth (2.5D effect)
+    leaf.rotation.x = -Math.PI / 2.5;
+
+    return leaf;
+}
+
+// Create multiple leaves
+const group = new THREE.Group();
+
+for (let i = 0; i < 8; i++) {
+    const leaf = createLeaf();
+    leaf.position.set(
+        (Math.random() - 0.5) * 2,
+        Math.random() * 2,
+        (Math.random() - 0.5) * 2
+    );
+    leaf.rotation.z = Math.random() * Math.PI;
+    group.add(leaf);
+}
+
+// Stem
+const stemGeometry = new THREE.CylinderGeometry(0.05, 0.08, 2, 8);
+const stemMaterial = new THREE.MeshStandardMaterial({ color: 0x27ae60 });
+const stem = new THREE.Mesh(stemGeometry, stemMaterial);
+stem.position.y = 1;
+
+group.add(stem);
+
+scene.add(group);
+
+// Ground (optional)
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.MeshStandardMaterial({ color: 0x222222 })
+);
+plane.rotation.x = -Math.PI / 2;
+scene.add(plane);
+
+// Animate
+function animate() {
+    requestAnimationFrame(animate);
+
+    group.rotation.y += 0.002;
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

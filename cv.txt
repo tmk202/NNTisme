@@ -1,0 +1,80 @@
+Nguyễn Ngọc Tú
+Kỹ sư Phần mềm | Chuyên gia Xây dựng Hệ thống Tự động hóa & AI
+“I don’t just learn, I build to solve.”
+INFORMATION
+Ngày sinh Tháng 11, 1999
+Địa chỉ Nam Từ Liêm, Hà Nội, Vietnam
+Điện thoại 0965 533 716
+Email giadung8686@gmail.com
+SKILLS
+Lập trình Node.js, TypeScript, Python, JavaScript
+Frontend React, Vite, TailwindCSS, HTML, CSS
+Backend Express, FastAPI, REST APIs, WebSockets
+CSDL PostgreSQL, MySQL, Redis, Supabase
+DevOps Docker, PM2, Nginx, GitHub Actions, n8n
+Tư duy Tư duy hệ thống, Giải quyết vấn đề, Tự học nhanh
+WORK EXPERIENCE
+Nền tảng Giáo dục Trực tuyến TopUni & TopClass (HOCMAI Streamapp)
+Solo Dev
+Kỹ sư Full-Stack
+Xây dựng nền tảng học trực tuyến quy mô sản xuất tích hợp với LMS của HOCMAI, hỗ
+trợ hơn5000+ người dùng đồng thời với tương tác thời gian thực và quy trình học tập
+tự động.
+•Thiết kế hệ thống chat thời gian thực có khả năng mở rộng sử dụng Socket.IO vàRedis
+Pub/Sub .
+•Phát triển hệ thống bài tập tương tác với tính năng nộp bài thời gian thực và bảng xếp
+hạng trực tiếp.
+•Tối ưu hóa lược đồ MySQL xử lý hơn 1000 thao tác đồng thời với độ trễ dưới 50ms.
+•Triển khai hệ thống với PM2 cluster mode vàNginxđảm bảo zero-downtime.
+Tech Stack : Node.js, Express, MySQL, Redis, Socket.IO, PM2, Nginx
+Nền tảng học tập cộng tác thời gian thực Phòng Tự Học (HOCMAI)
+10/2025 – 11/2025
+Kỹ sư Full-Stack
+Xây dựng nền tảng học tập cộng tác (virtual co-working) phục vụ 1000+ người dùng
+đồng thời , hỗ trợ làm việc và học tập thời gian thực với video WebRTC.
+•Thiết kế backend mở rộng với Node.js ,PostgreSQL ,RedisvàSocket.IO đa instance.
+•Triển khai Mediasoup SFU cho video WebRTC, hỗ trợ chia sẻ màn hình và điều chỉnh
+bitrate động.
+•Phát triển các tính năng cộng tác thời gian thực: Pomodoro, quản lý task nhóm, chat toàn
+hệ thống.
+•Xây dựng hệ thống xác thực JWT, phân quyền vai trò (RBAC) và tích hợp SSO nội bộ.
+•Tối ưu hiệu năng, đạt độ trễ sự kiện thời gian thực dưới 100ms.
+•Triển khai production với CI/CD GitHub Actions vàNginx.
+Tech Stack : Node.js, Express, React, PostgreSQL, Redis, Socket.IO, Mediasoup, WebRTC,
+Nginx
+Nền tảng Tự động hóa Video bằng AI Solo Dev
+Kỹ sư Full-Stack & AI (HOCMAI)
+Thiết kế và triển khai hệ thống tự động hóa video AI chuyển đổi văn bản và hình ảnh thành
+video hoàn chỉnh với thuyết minh, phụ đề và hình ảnh đồng bộ.
+•Thiết kếkiến trúc microservices với hơn 15 dịch vụ bằng Node.js & Express .
+•Xây dựng lớp điều phối AI tích hợp Gemini,AssemblyAI ,OpenAI vàAusyncLab
+TTS.
+•Phát triển pipeline tự động hóa FFmpeg hiệu suất cao để xử lý âm thanh và hình ảnh.
+•Xây dựng engine phụ đề tùy chỉnh khớp chính xác timestamp sử dụng Levenshtein
+distance .
+Tech Stack : Node.js, Express, React, TypeScript, Python, FFmpeg, Gemini AI, AssemblyAI
+Hệ sinh thái tự động hóa nội dung end-to-end Solo Development
+Backend & Workflow Automation
+Xây dựng hệ thống tự động hóa nội dung hoàn chỉnh, tích hợp 10+ microservices với
+n8n, cho phép reup video Douyin chỉ với một click, tự động dịch, lồng tiếng và đăng tải —
+rút ngắn thời gian xử lý từ 2 giờ xuống 5 phút/video .
+•Thiết kế kiến trúc microservices bằng FastAPI cho tải video, xử lý media, TTS và
+automation CapCut.
+•Xây dựng service tải video bất đồng bộ với asyncio, tăng tốc độ download gấp 10 lần.
+•Phát triển pipeline xử lý video dựa trên FFmpeg : tách audio, STT, dịch, TTS, burn
+subtitle, chèn logo.
+•Tối ưu TTS với nhiều engine (Edge-TTS, gTTS, VieNeu-TTS), giảm thời gian tạo voice từ
+5 phút xuống 30 giây .
+•Phát triển Chrome Extension hỗ trợ chọn video Douyin và kích hoạt workflow tự động.
+•Orchestrate toàn bộ quy trình bằng n8n, xử lý retry, webhook và polling cho tác vụ dài.
+Tech Stack : Python, FastAPI, FFmpeg, asyncio, n8n, Whisper, Edge-TTS, Google Translate
+API, Chrome Extension
+EDUCATION
+Đại học Thủy Lợi 2018 - 2023
+Cử nhân Công nghệ Thông tin
+Tập trung vào Kỹ thuật Phần mềm, Cấu trúc dữ liệu và Giải thuật. Đồ án tốt nghiệp: Web
+quản lý bán hàng (Laravel).
+ACTIVITIES & RECOGNITION
+•Thành viên xuất sắc bộ phận / Team R&D — Tháng 8
+•Nhân viên xuất sắc Quý (Q3)
+•Tham gia tích cực các hoạt động tình nguyện và thi đấu bóng rổ

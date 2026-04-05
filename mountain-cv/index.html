@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey - Interactive CV</title>
+    <link rel="stylesheet" href="game-cv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Nền giả lập cho Nông Trại (Lưới Cyber) -->
+    <div id="game-canvas-container">
+        <div class="farm-placeholder"></div>
+        <canvas id="farmCanvas" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 2; cursor: crosshair;"></canvas>
+    </div>
+
+    <!-- Tạm Tắt 100% Giao diện Cũ (Farm UI, Start Button...) để Trầm trồ ngắm Dốc Núi -->
+    <div id="ui-layer" style="display: none !important;"></div>
+
+    <!-- Thư viện Đồ hoạ 3D và Animation (THREE.js & GSAP) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- GUI Debug Camera (Hiển thị toạ độ cho bạn copy) -->
+    <div id="cameraDebug" style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #00ff00; padding: 15px; font-family: monospace; z-index: 9999; border: 1px solid #00ff00; pointer-events: none; display: none;">
+        CAMERA INFO:<br>
+        Pos: x=0, y=0, z=0<br>
+        Rot: x=0, y=0, z=0
+    </div>
+
+    <!-- Script điều khiển UI và Khởi tạo Mountain Journey 3D -->
+    <script src="game-cv.js"></script>
+    <script src="mountain-journey.js"></script>
+</body>
+</html>
