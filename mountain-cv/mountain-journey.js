@@ -15,7 +15,8 @@ class MountainJourney {
         this.setupMilestones(); // Các mốc sự nghiệp
 
         this.scene.background = this.seasons[0].bg.clone(); 
-        this.scene.fog = new THREE.FogExp2(this.seasons[0].fog.getHex(), this.seasons[0].fogDensity); 
+        // Bỏ sương mù theo yêu cầu để test bầu trời
+        // this.scene.fog = new THREE.FogExp2(this.seasons[0].fog.getHex(), this.seasons[0].fogDensity); 
         
         this.debugEl = document.getElementById('cameraDebug');
 
@@ -95,6 +96,8 @@ class MountainJourney {
         this.dirLight = new THREE.DirectionalLight(this.seasons[0].light.getHex(), 2.0); 
         this.dirLight.position.set(120, 100, 60); 
         this.dirLight.castShadow = true;
+        this.dirLight.shadow.mapSize.width = 2048;
+        this.dirLight.shadow.mapSize.height = 2048;
         
         const d = 150;
         this.dirLight.shadow.camera.left = -d;
@@ -157,16 +160,93 @@ class MountainJourney {
 
     buildMiddlegroundSlope() {
         // Kéo rộng chiều Y (ngang) của tấm PlaneGeometry ra 400 để sườn núi phình to
-        const geo = new THREE.PlaneGeometry(600, 400, 500, 120); 
-        const pos = geo.attributes.position;
-        for (let i = 0; i < pos.count; i++) {
-            const vx = pos.getX(i); 
-            const vy = pos.getY(i); 
+        let baseGeo = new THREE.PlaneGeometry(600, 400, 500, 120); 
+        const basePos = baseGeo.attributes.position;
+        for (let i = 0; i < basePos.count; i++) {
+            const vx = basePos.getX(i); 
+            const vy = basePos.getY(i); 
             const topo = this.getMountainTopography(vx, -vy);
-            pos.setZ(i, topo.height);
+            basePos.setZ(i, topo.height);
         }
+        baseGeo.computeVertexNormals();
+        
+        // Tách lưới thành các tam giác rời rạc (Non-indexed) để tô màu Solid per Face (Chuẩn Low-poly)
+        const geo = baseGeo.toNonIndexed();
+        const pos = geo.attributes.position;
+        const count = pos.count;
+        const colors = new Float32Array(count * 3);
+        
+        const colorRock = new THREE.Color('#334155'); // Đá xám
+        const colorGrass = new THREE.Color('#166534'); // Cỏ xanh mướt (Thêm màu xanh tự nhiên)
+        const colorDirt = new THREE.Color('#78350f'); // Đất nâu
+        const colorSnow = new THREE.Color('#f8fafc'); // Tuyết
+        const tempColor = new THREE.Color();
+        const vA = new THREE.Vector3();
+        const vB = new THREE.Vector3();
+        const vC = new THREE.Vector3();
+        const cb = new THREE.Vector3();
+        const ab = new THREE.Vector3();
+
+        // Mỗi mảnh (face) gồm 3 đỉnh i, i+1, i+2
+        for (let i = 0; i < count; i += 3) {
+            vA.fromBufferAttribute(pos, i);
+            vB.fromBufferAttribute(pos, i+1);
+            vC.fromBufferAttribute(pos, i+2);
+            
+            // Tính vector Normal của Face để biết độ dốc
+            cb.subVectors(vC, vB);
+            ab.subVectors(vA, vB);
+            cb.cross(ab);
+            cb.normalize(); 
+            
+            // Độ dốc dựa vào trục Z (vì plane tạo trên mặt phẳng XY, lên dốc là Z)
+            const slope = 1.0 - Math.abs(cb.z); 
+            
+            const centerX = (vA.x + vB.x + vC.x) / 3;
+            // Tiến trình X đi từ -180 đến 110 (Mùa Xuân -> Mùa Đông)
+            const progress = (centerX - -180) / (110 - -180); 
+            
+            // --- TÔ MÀU (COLOR BIOMES) ---
+            if (slope > 0.4 + Math.random()*0.15) {
+                // Vách núi dựng đứng -> Vách đá Xám pha Nâu
+                tempColor.copy(colorRock).lerp(colorDirt, Math.random() * 0.3);
+            } else {
+                // Sườn thoải -> Cỏ, tuyết, đất tùy theo mùa
+                if (progress > 0.75) { 
+                    // Mùa Đông: Tuyết phủ xen vách đá
+                    tempColor.copy(colorSnow).lerp(colorRock, slope * 1.5);
+                } else if (progress > 0.5) { 
+                    // Mùa Thu: Cỏ úa (Cam/Nâu/Vàng)
+                    const fallColor = new THREE.Color(Math.random() > 0.5 ? '#d97706' : '#9a3412');
+                    tempColor.copy(colorGrass).lerp(fallColor, (progress - 0.5) * 4);
+                } else { 
+                    // Mùa Xuân & Hạ: Cỏ xanh mướt (Grass)
+                    tempColor.copy(colorGrass);
+                    // Rắc thêm tí noise sáng tối cho bớt nhàm chán
+                    const lightness = 0.8 + Math.random() * 0.4;
+                    tempColor.r *= lightness;
+                    tempColor.g *= lightness;
+                    tempColor.b *= lightness;
+                }
+            }
+            
+            // Đổ Solid Color cho 3 đỉnh của một Face
+            colors[i*3]     = tempColor.r; colors[i*3+1]   = tempColor.g; colors[i*3+2]   = tempColor.b;
+            colors[(i+1)*3] = tempColor.r; colors[(i+1)*3+1] = tempColor.g; colors[(i+1)*3+2] = tempColor.b;
+            colors[(i+2)*3] = tempColor.r; colors[(i+2)*3+1] = tempColor.g; colors[(i+2)*3+2] = tempColor.b;
+        }
+        
+        geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         geo.computeVertexNormals();
-        const mat = new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.9, flatShading: true });
+
+        // Thêm vertexColors: true
+        const mat = new THREE.MeshStandardMaterial({ 
+            color: '#ffffff', // Màu base trắng để hiển thị màu Vertex
+            roughness: 0.9, 
+            flatShading: true,
+            vertexColors: true
+        });
+        
         this.mainMountain = new THREE.Mesh(geo, mat);
         this.mainMountain.rotation.x = -Math.PI / 2;
         this.mainMountain.castShadow = true;
@@ -231,15 +311,46 @@ class MountainJourney {
         const fsVel = new Float32Array(fsCount * 3);
         const fsLife = new Float32Array(fsCount);
         for(let i=0; i<fsCount; i++) fsLife[i] = -1; // trạng thái chết
+        
+        fsGeo.setAttribute('position', new THREE.BufferAttribute(fsPos, 3));
+        const fsMat = new THREE.PointsMaterial({ size: 1.5, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        this.fsPoints = new THREE.Points(fsGeo, fsMat);
+        this.scene.add(this.fsPoints);
+        this.fsLife = fsLife;
+        this.fsVel = fsVel;
     }
 
     buildSeasonalDecorations() {
         const startX = -180;
         const endX = 110;
-        const step = 4.5; // Tăng mật độ cây (dày hơn gấp đôi)
+        const step = 4.5;
 
-        const trunkMat = new THREE.MeshStandardMaterial({ color: '#4d2c19', roughness: 0.9 });
+        // Tái sử dụng Materials
+        const trunkMat = new THREE.MeshStandardMaterial({ color: '#3f2716', roughness: 0.9, flatShading: true });
+        const willowLeafMat = new THREE.MeshStandardMaterial({ color: '#84cc16', roughness: 0.8, flatShading: true });
+        const ginkgoLeafMat = new THREE.MeshStandardMaterial({ color: '#22c55e', roughness: 0.8, flatShading: true });
+        const sakuraLeafMat = new THREE.MeshStandardMaterial({ color: '#fbcfe8', roughness: 0.8, flatShading: true });
+        const pineMat = new THREE.MeshStandardMaterial({ color: '#064e3b', roughness: 0.9, flatShading: true });
+        const oakMat = new THREE.MeshStandardMaterial({ color: '#15803d', roughness: 0.7, flatShading: true });
+        const bushMat = new THREE.MeshStandardMaterial({ color: '#14532d', roughness: 0.7, flatShading: true });
+        const fallYellowMat = new THREE.MeshStandardMaterial({ color: '#f59e0b', roughness: 0.9, flatShading: true });
+        const fallRedMat = new THREE.MeshStandardMaterial({ color: '#b91c1c', roughness: 0.9, flatShading: true });
+        const snowMat = new THREE.MeshStandardMaterial({ color: '#f1f5f9', roughness: 0.4, flatShading: true });
+
+        // Tái sử dụng Geometries để tối ưu và cho hình dáng Low-poly đẹp mắt
+        const trunkGeo = new THREE.CylinderGeometry(0.2, 0.4, 3, 5); 
+        const thickTrunkGeo = new THREE.CylinderGeometry(0.4, 0.7, 4, 5);
+        const tallTrunkGeo = new THREE.CylinderGeometry(0.3, 0.5, 6, 5);
         
+        const canopyGeo = new THREE.DodecahedronGeometry(2.5, 0); // Tán sồi/rẻ quạt
+        const sakuraGeo = new THREE.IcosahedronGeometry(2.0, 0); // Hoa anh đào
+        const bushGeo = new THREE.DodecahedronGeometry(1.5, 0); // Bụi cây
+        
+        const pineGeo1 = new THREE.ConeGeometry(2.5, 3.5, 5);
+        const pineGeo2 = new THREE.ConeGeometry(2.0, 3.5, 5);
+        const pineGeo3 = new THREE.ConeGeometry(1.5, 3.5, 5);
+        const snowPineGeo1 = new THREE.ConeGeometry(2.6, 3.6, 5); // Tuyết phủ dày hơn chút xíu
+
         for (let x = startX; x < endX; x += step) {
             const topo = this.getSpineTopography(x);
             // Phân tán rộng sang 2 bên sườn núi (tới 35 unit)
@@ -251,105 +362,108 @@ class MountainJourney {
             group.position.set(x, y, z);
             group.rotation.y = Math.random() * Math.PI;
             
-            // Tỷ lệ to nhỏ ngẫu nhiên cực đại (từ cây mầm đến đại thụ)
-            const s = 0.5 + Math.pow(Math.random(), 2) * 2.2;
+            // Tỷ lệ to nhỏ ngẫu nhiên cực đại
+            const s = 0.6 + Math.pow(Math.random(), 2) * 1.5;
             group.scale.set(s, s, s);
 
             const progress = (x - startX) / (endX - startX);
 
             if (progress < 0.25) { // === XUÂN ===
                 const rand = Math.random();
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 4), trunkMat);
-                trunk.position.y = 2; group.add(trunk);
-
-                if (rand > 0.7) { // Cây Liễu (Willow - Loại cây mới)
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#bef264', roughness: 0.8 });
-                    for(let i=0; i<6; i++) {
-                        const leaf = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3), leafMat);
-                        leaf.position.set(Math.sin(i)*1.2, 4, Math.cos(i)*1.2);
-                        leaf.rotation.x = 0.5; group.add(leaf);
-                    }
-                } else if (rand > 0.4) { // Cây Rẻ Quạt Xanh
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#86efac', roughness: 0.8 });
-                    for(let i=0; i<4; i++) {
-                        const leaf = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5, 0), leafMat);
-                        leaf.position.set(Math.sin(i)*1.5, 4 + i*0.3, Math.cos(i)*1.5);
-                        leaf.scale.set(1.5, 0.4, 1.5); group.add(leaf);
-                    }
-                } else { // Hoa Anh Đào
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#fecdd3', roughness: 0.8 });
-                    for(let i=0; i<3; i++) {
-                        const leaf = new THREE.Mesh(new THREE.SphereGeometry(1.4, 5, 5), leafMat);
-                        leaf.position.set(Math.sin(i*2)*1.0, 3.8 + i*0.6, Math.cos(i*2)*1.0);
-                        group.add(leaf);
-                    }
+                if (rand > 0.6) { // Cây Phong nhỏ xanh non
+                    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                    trunk.position.y = 1.5; group.add(trunk);
+                    const leaf = new THREE.Mesh(canopyGeo, willowLeafMat);
+                    leaf.position.y = 3.5; group.add(leaf);
+                } else if (rand > 0.3) { // Cây Sồi nhỏ xanh lơ
+                    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                    trunk.position.y = 1.5; group.add(trunk);
+                    const leaf = new THREE.Mesh(canopyGeo, ginkgoLeafMat);
+                    leaf.position.y = 3.8; leaf.scale.set(1.2, 0.6, 1.2); group.add(leaf);
+                } else { // Hoa Anh Đào (Sakura)
+                    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                    trunk.position.y = 1.5; group.add(trunk);
+                    // 3 khóm Anh đào cụm lại
+                    const leaf1 = new THREE.Mesh(sakuraGeo, sakuraLeafMat); leaf1.position.set(0, 3.5, 0);
+                    const leaf2 = new THREE.Mesh(sakuraGeo, sakuraLeafMat); leaf2.position.set(1.2, 3.0, 1.2); leaf2.scale.setScalar(0.7);
+                    const leaf3 = new THREE.Mesh(sakuraGeo, sakuraLeafMat); leaf3.position.set(-1.2, 2.7, -0.8); leaf3.scale.setScalar(0.6);
+                    group.add(leaf1, leaf2, leaf3);
                 }
                 
             } else if (progress < 0.5) { // === HẠ ===
                 const rand = Math.random();
                 if (rand > 0.6) { // Cây Thông Cao
-                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 6), trunkMat);
+                    const trunk = new THREE.Mesh(tallTrunkGeo, trunkMat);
                     trunk.position.y = 3; group.add(trunk);
-                    const pineMat = new THREE.MeshStandardMaterial({ color: '#064e3b', roughness: 0.9 });
-                    for(let i=0; i<3; i++) {
-                        const layer = new THREE.Mesh(new THREE.ConeGeometry(2.5 - i*0.5, 3.5, 4), pineMat);
-                        layer.position.y = 4.5 + i*1.8; group.add(layer);
-                    }
-                } else if (rand > 0.3) { // Cây Sồi (Oak - Loại mới)
-                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 4), trunkMat);
+                    const layer1 = new THREE.Mesh(pineGeo1, pineMat); layer1.position.y = 3.5; group.add(layer1);
+                    const layer2 = new THREE.Mesh(pineGeo2, pineMat); layer2.position.y = 5.5; group.add(layer2);
+                    const layer3 = new THREE.Mesh(pineGeo3, pineMat); layer3.position.y = 7.0; group.add(layer3);
+                } else if (rand > 0.2) { // Cây Sồi Cổ Thụ
+                    const trunk = new THREE.Mesh(thickTrunkGeo, trunkMat);
                     trunk.position.y = 2; group.add(trunk);
-                    const oakMat = new THREE.MeshStandardMaterial({ color: '#166534', roughness: 0.7 });
-                    const leaves = new THREE.Mesh(new THREE.IcosahedronGeometry(2.5, 1), oakMat);
-                    leaves.position.y = 4; group.add(leaves);
+                    const leaves = new THREE.Mesh(canopyGeo, oakMat);
+                    leaves.position.y = 4.5; leaves.scale.setScalar(1.4); group.add(leaves);
                 } else { // Bụi rậm rạp
-                    const bushMat = new THREE.MeshStandardMaterial({ color: '#14532d', roughness: 0.7 });
-                    for(let i=0; i<6; i++) {
-                        const bush = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2 + Math.random(), 0), bushMat);
-                        bush.position.set((Math.random()-0.5)*3, 0.5+Math.random(), (Math.random()-0.5)*3);
-                        group.add(bush);
+                    const bush = new THREE.Mesh(bushGeo, bushMat);
+                    bush.position.y = 0.5; bush.scale.set(1.5, 0.8, 1.5);
+                    group.add(bush);
+                    if(Math.random() > 0.5) {
+                        const bush2 = new THREE.Mesh(bushGeo, bushMat);
+                        bush2.position.set(1.5, 0.3, 1.0); bush2.scale.setScalar(0.8);
+                        group.add(bush2);
                     }
                 }
             } else if (progress < 0.75) { // === THU ===
                 const isYellow = Math.random() > 0.5;
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 4), trunkMat);
-                trunk.position.y = 2; group.add(trunk);
-
-                const leafColor = isYellow ? '#fbbf24' : '#b91c1c'; 
-                const fallMat = new THREE.MeshStandardMaterial({ color: leafColor, roughness: 0.9 });
-                for(let i=0; i<4; i++) {
-                    const leaf = new THREE.Mesh(new THREE.DodecahedronGeometry(1.6, 0), fallMat);
-                    leaf.position.set(Math.sin(i*1.5)*1.2, 4.5 + i*0.5, Math.cos(i*1.5)*1.2);
-                    group.add(leaf);
+                const fallMat = isYellow ? fallYellowMat : fallRedMat;
+                const rand = Math.random();
+                
+                if (rand > 0.4) { // Sồi thu
+                    const trunk = new THREE.Mesh(thickTrunkGeo, trunkMat);
+                    trunk.position.y = 2; group.add(trunk);
+                    const leaves = new THREE.Mesh(canopyGeo, fallMat);
+                    leaves.position.y = 4.5; leaves.scale.setScalar(1.3); group.add(leaves);
+                } else { // Bụi thu
+                    const bush = new THREE.Mesh(bushGeo, fallMat);
+                    bush.position.y = 0.5; bush.scale.set(1.2, 0.8, 1.2);
+                    group.add(bush);
                 }
             } else { // === ĐÔNG ===
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 6), trunkMat);
-                trunk.position.y = 3; group.add(trunk);
-                const snowMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.4 });
-                for(let i=0; i<3; i++) {
-                    const layer = new THREE.Mesh(new THREE.ConeGeometry(2.5 - i*0.5, 4, 4), snowMat);
-                    layer.position.y = 5 + i*2.0; group.add(layer);
+                const rand = Math.random();
+                if (rand > 0.6) { // Thông phủ tuyết
+                    const trunk = new THREE.Mesh(tallTrunkGeo, trunkMat);
+                    trunk.position.y = 3; group.add(trunk);
+                    const layer1 = new THREE.Mesh(snowPineGeo1, snowMat); layer1.position.y = 3.5; group.add(layer1);
+                    const layer2 = new THREE.Mesh(pineGeo2, snowMat); layer2.position.y = 5.5; group.add(layer2);
+                    const layer3 = new THREE.Mesh(pineGeo3, snowMat); layer3.position.y = 7.0; group.add(layer3);
+                } else { // Cây trụi lá (Dead tree)
+                    const trunk = new THREE.Mesh(tallTrunkGeo, trunkMat);
+                    trunk.position.y = 3; group.add(trunk);
+                    // Cành trơ trọi
+                    const branch1 = new THREE.Mesh(trunkGeo, trunkMat); 
+                    branch1.position.set(0.8, 4.5, 0); branch1.rotation.z = Math.PI / 4; branch1.scale.setScalar(0.5);
+                    const branch2 = new THREE.Mesh(trunkGeo, trunkMat); 
+                    branch2.position.set(-0.8, 5.5, 0.5); branch2.rotation.z = -Math.PI / 3; branch2.rotation.x = Math.PI/4; branch2.scale.setScalar(0.4);
+                    group.add(branch1, branch2);
                 }
-                const rockExtra = new THREE.Mesh(new THREE.IcosahedronGeometry(2.5, 0), new THREE.MeshStandardMaterial({ color: '#f8fafc' }));
-                rockExtra.position.y = 0.5; group.add(rockExtra);
             }
             this.mgGroup.add(group);
         }
     }
-
     buildCharacter() {
         this.characterGroup = new THREE.Group();
         
         // === VẬT LIỆU ===
         this.suitColors = ['#1a2744', '#f8fafc', '#1a2744', '#0f172a']; // Xuân (Navi), Hạ (White Sơ mi), Thu (Navi), Đông (Đen dày)
-        this.suitMat      = new THREE.MeshStandardMaterial({ color: this.suitColors[0], roughness: 0.85 });
-        this.suitLightMat = new THREE.MeshStandardMaterial({ color: '#243260', roughness: 0.8 });
-        const shirtMat    = new THREE.MeshStandardMaterial({ color: '#f0f4ff', roughness: 0.9 });
-        const tieMat      = new THREE.MeshStandardMaterial({ color: '#c0392b', roughness: 0.6 });
-        const skinMat     = new THREE.MeshStandardMaterial({ color: '#e8a87c', roughness: 0.5 });
-        const shoesMat    = new THREE.MeshStandardMaterial({ color: '#0a0a12', roughness: 0.3, metalness: 0.2 });
-        const hairMat     = new THREE.MeshStandardMaterial({ color: '#1a0a00', roughness: 0.9 });
-        const briefMat    = new THREE.MeshStandardMaterial({ color: '#3b1a08', roughness: 0.7 });
-        const sweatMat    = new THREE.MeshStandardMaterial({ color: '#aedff7', transparent: true, opacity: 0.75 });
+        this.suitMat      = new THREE.MeshStandardMaterial({ color: this.suitColors[0], roughness: 0.85, flatShading: true });
+        this.suitLightMat = new THREE.MeshStandardMaterial({ color: '#243260', roughness: 0.8, flatShading: true });
+        const shirtMat    = new THREE.MeshStandardMaterial({ color: '#f0f4ff', roughness: 0.9, flatShading: true });
+        const tieMat      = new THREE.MeshStandardMaterial({ color: '#c0392b', roughness: 0.6, flatShading: true });
+        const skinMat     = new THREE.MeshStandardMaterial({ color: '#e8a87c', roughness: 0.5, flatShading: true });
+        const shoesMat    = new THREE.MeshStandardMaterial({ color: '#0a0a12', roughness: 0.3, metalness: 0.2, flatShading: true });
+        const hairMat     = new THREE.MeshStandardMaterial({ color: '#1a0a00', roughness: 0.9, flatShading: true });
+        const briefMat    = new THREE.MeshStandardMaterial({ color: '#3b1a08', roughness: 0.7, flatShading: true });
+        const sweatMat    = new THREE.MeshStandardMaterial({ color: '#aedff7', transparent: true, opacity: 0.75, flatShading: true });
 
         // === THÂN ===
         this.torso = new THREE.Group();
@@ -366,7 +480,7 @@ class MountainJourney {
 
         // Khăn len (Ẩn mặc định, chỉ hiện mùa Đông)
         const scarfGeo = new THREE.TorusGeometry(0.8, 0.3, 8, 16);
-        this.scarf = new THREE.Mesh(scarfGeo, new THREE.MeshStandardMaterial({ color: '#991b1b' }));
+        this.scarf = new THREE.Mesh(scarfGeo, new THREE.MeshStandardMaterial({ color: '#991b1b', flatShading: true }));
         this.scarf.rotation.x = Math.PI / 2;
         this.scarf.position.set(0, 2, 0);
         this.scarf.visible = false;
@@ -436,11 +550,11 @@ class MountainJourney {
 
         // Miệng mở hé ra thở dốc
         const jawGeo = new THREE.BoxGeometry(0.9, 0.22, 0.12);
-        const jaw = new THREE.Mesh(jawGeo, new THREE.MeshStandardMaterial({ color: '#c0392b' }));
+        const jaw = new THREE.Mesh(jawGeo, new THREE.MeshStandardMaterial({ color: '#c0392b', flatShading: true }));
         jaw.position.set(0, -0.45, 0.79);
         this.headGroup.add(jaw);
         const teethGeo = new THREE.BoxGeometry(0.82, 0.1, 0.13);
-        const teeth = new THREE.Mesh(teethGeo, new THREE.MeshStandardMaterial({ color: '#f5f5f5' }));
+        const teeth = new THREE.Mesh(teethGeo, new THREE.MeshStandardMaterial({ color: '#f5f5f5', flatShading: true }));
         teeth.position.set(0, -0.38, 0.80);
         this.headGroup.add(teeth);
 
@@ -555,80 +669,67 @@ class MountainJourney {
         this.characterWrapper.add(this.torso);
         this.characterGroup.add(this.characterWrapper);
         this.characterGroup.scale.set(1.3, 1.3, 1.3);
+        this.characterGroup.visible = false; // TẠM ẨN: Thiết kế cảnh Low-Poly
         this.mgGroup.add(this.characterGroup);
     }
 
     buildBackground() {
-        // --- DÃY NÚI SIÊU KHỔNG LỒ & RÕ NÉT ---
-        const bgMtnMat = new THREE.MeshStandardMaterial({ color: '#2a3b52', roughness: 0.8, flatShading: true });
-        const snowMat = new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 0.3, roughness: 0.4 });
-
-        for(let i=0; i<35; i++) {
-            const group = new THREE.Group();
-            const radius = 120 + Math.random() * 150; // Núi to hơn hẳn
-            const heightScale = 2.0 + Math.random() * 3.5;
+        const loader = new THREE.GLTFLoader();
+        loader.load('assets/glb/fantasy_sky_background.glb', (gltf) => {
+            const bgModel = gltf.scene;
             
-            const geo = new THREE.IcosahedronGeometry(radius, 1);
-            const mountain = new THREE.Mesh(geo, bgMtnMat);
-            mountain.scale.set(1, heightScale, 1);
+            // Đặt kích thước để đường kính skybox ~1600 (phù hợp với viễn cảnh 2000 của Camera)
+            bgModel.scale.set(50, 50, 50); 
             
-            // Đẩy núi lại gần camera hơn (z = -400) để thấy rõ chi tiết đá
-            group.position.set((Math.random() - 0.5) * 1800, -80, -400 - Math.random() * 500);
-            group.rotation.y = Math.random() * Math.PI;
-            group.add(mountain);
+            // Đảm bảo background không cản bóng VÀ KHÔNG BỊ SƯƠNG MÙ (FOG) CHE KHUẤT
+            bgModel.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                    if (child.material) {
+                        child.material.fog = false; // QUAN TRỌNG: Không để sương mù nuốt chửng bầu trời
+                        // Phát sáng nhẹ để rõ họa tiết mây dù đứng trong góc tối
+                        child.material.emissive = new THREE.Color('#ffffff');
+                        child.material.emissiveIntensity = 0.4; 
+                    }
+                }
+            });
 
-            // Chóp tuyết sáng rực (Emissive)
-            if (Math.random() > 0.1) {
-                const snowGeo = new THREE.IcosahedronGeometry(radius * 0.65, 1);
-                const cap = new THREE.Mesh(snowGeo, snowMat);
-                cap.scale.set(1.15, 1.6, 1.15);
-                cap.position.y = radius * heightScale * 0.45;
-                group.add(cap);
+            // Chạy animation (vd: Mây trôi, chim bay) nếu có sẵn trong file GLB
+            if (gltf.animations && gltf.animations.length > 0) {
+                this.bgMixer = new THREE.AnimationMixer(bgModel);
+                gltf.animations.forEach(clip => {
+                    this.bgMixer.clipAction(clip).play();
+                });
             }
-            this.bgGroup.add(group);
-        }
-
-        // --- ĐÁM MÂY LOW-POLY (DETAIL CLUSTERS) ---
-        this.clouds = [];
-        const cloudMat = new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: 0.8, flatShading: true });
-        for(let i=0; i<15; i++) {
-            const cloud = new THREE.Group();
-            for(let j=0; j<6; j++) {
-                const part = new THREE.Mesh(new THREE.DodecahedronGeometry(5 + Math.random()*5, 0), cloudMat);
-                part.position.set(j*6 + (Math.random()-0.5)*10, (Math.random()-0.5)*8, (Math.random()-0.5)*8);
-                cloud.add(part);
-            }
-            cloud.position.set((Math.random()-0.5)*1200, 200 + Math.random()*100, -300 - Math.random()*400);
-            this.bgGroup.add(cloud);
-            this.clouds.push(cloud);
-        }
+            
+            this.bgModel = bgModel;
+            this.scene.add(bgModel); // Bầu trời thêm vào scene tổng để không bị lôi kéo bởi Parallax núi
+        }, undefined, (error) => {
+            console.error('Lỗi khi tải fantasy_sky_background.glb:', error);
+        });
     }
 
     buildForeground() {
         const startX = -180;
         const endX = 110;
-        const trailMat = new THREE.MeshStandardMaterial({ color: '#3b2518', roughness: 1.0 }); // Đất đường mòn sẫm
-        const postMat = new THREE.MeshStandardMaterial({ color: '#2a1a0a' });
+        const postMat = new THREE.MeshStandardMaterial({ color: '#3b2518', roughness: 0.9, flatShading: true });
         
         for (let x = startX; x < endX; x += 4) {
             const topo = this.getSpineTopography(x);
 
-            // Dải đất nền đường mòn (Tạo độ gồ ghề nhẹ cho đường mòn đất)
-            const trailGeo = new THREE.PlaneGeometry(6, 12);
-            const trail = new THREE.Mesh(trailGeo, trailMat);
-            trail.position.set(topo.x, topo.y + 0.05, topo.z);
-            trail.rotation.x = -Math.PI / 2;
-            const nextTopo = this.getSpineTopography(x + 1);
-            trail.rotation.y = Math.atan2(nextTopo.y - topo.y, nextTopo.x - topo.x);
-            this.fgGroup.add(trail);
+            // Loại bỏ các tấm PlaneGeometry (bước gỗ / trail planks) vì gây nhiễu và vỡ bề mặt
             
-            // KHÔNG CÒN THANH GỖ (Dọn dẹp mặt đường cho thoải)
-
-            if (Math.round(x) % 20 === 0) {
-                const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 2.5), postMat);
-                postL.position.set(x, topo.y + 0.8, topo.z + 9); 
+            // Chỉ giữ lại một vài cọc đánh dấu đường nho nhỏ
+            if (Math.round(x) % 30 === 0) {
+                const postBaseGeo = new THREE.CylinderGeometry(0.2, 0.3, 2.5, 5);
+                
+                const postL = new THREE.Mesh(postBaseGeo, postMat);
+                postL.position.set(x, topo.y + 0.5, topo.z + 8); 
                 this.fgGroup.add(postL);
-                const postR = postL.clone(); postR.position.z = topo.z - 9;
+                
+                const postR = postL.clone(); 
+                postR.position.z = topo.z - 8;
                 this.fgGroup.add(postR);
             }
         }
@@ -726,6 +827,10 @@ class MountainJourney {
         const currentTime = performance.now() * 0.001;
         const dt = currentTime - this.lastTime;
         this.lastTime = currentTime;
+
+        if (this.bgMixer) {
+            this.bgMixer.update(dt);
+        }
 
         // --- XỬ LÝ TRẠNG THÁI THAY ĐỒ TẠI BIÊN MÙA ---
         const currentPhase = Math.floor(this.scrollProgress * 4);
@@ -878,22 +983,9 @@ class MountainJourney {
         const gYL = this.getSpineTopography(fXL).y;
         const gYR = this.getSpineTopography(fXR).y;
 
-        if (walkMode > 0.1) {
-            // Khoảng cách lý tưởng cần có để cẳng chân chạm mặt đất
-            const ikTargetL = hipWorldY - thighLen - gYL;
-            const ikTargetR = hipWorldY - thighLen - gYR;
-            
-            // Tính scale để co duỗi cẳng chân (Shin) bám khít đất
-            const ikScaleL = Math.max(0.65, Math.min(1.3, ikTargetL / shinLen));
-            const ikScaleR = Math.max(0.65, Math.min(1.3, ikTargetR / shinLen));
-            
-            this.kneeL.scale.y = this.kneeL.scale.y * 0.8 + ikScaleL * 0.2; 
-            this.kneeR.scale.y = this.kneeR.scale.y * 0.8 + ikScaleR * 0.2;
-        } else {
-            // Climb mode: trả về scale 1 để co gối tự nhiên
-            this.kneeL.scale.y = this.kneeL.scale.y * 0.9 + 1.0 * 0.1;
-            this.kneeR.scale.y = this.kneeR.scale.y * 0.9 + 1.0 * 0.1;
-        }
+        // Bỏ scale cẳng chân để không làm bẹp/kéo dài chiếc giày (Tránh Jelly Effect)
+        this.kneeL.scale.y = 1.0;
+        this.kneeR.scale.y = 1.0;
 
         // === HIỆU ỨNG HẠT BỤI DƯỚI CHÂN (Khi chân hạ xuống mặt đất) ===
         const isFootL_Down = Math.sin(cycle) > 0.95;
@@ -908,11 +1000,7 @@ class MountainJourney {
             m.group.rotation.y += 2 * dt;
             m.group.position.y += Math.sin(time * 2 + m.data.x) * 0.05;
         });
-
-        this.clouds.forEach(c => {
-            c.position.x += 2 * dt; // Mây trôi chậm sang phải
-            if (c.position.x > 600) c.position.x = -600; // Loop mây
-        });
+        // Procedural clouds removed as part of GLB background upgrade
 
         // 2. CAMERA TRACKING KHÓA VÀO NHÂN VẬT 
         // ... (phần camera giữ nguyên)
@@ -948,9 +1036,10 @@ class MountainJourney {
         const nextS = this.seasons[seasonIndex + 1];
 
         this.scene.background.copy(currS.bg).lerp(nextS.bg, lerpFactor);
-        this.scene.fog.color.copy(currS.fog).lerp(nextS.fog, lerpFactor);
-        this.scene.fog.density = currS.fogDensity + (nextS.fogDensity - currS.fogDensity) * lerpFactor;
         
+        // Tạm thời tắt update sương mù
+        // this.scene.fog.color.copy(currS.fog).lerp(nextS.fog, lerpFactor);
+        // this.scene.fog.density = currS.fogDensity + (nextS.fogDensity - currS.fogDensity) * lerpFactor;
         this.dirLight.color.copy(currS.light).lerp(nextS.light, lerpFactor);
         
         const lightIntensity = seasonIndex === 3 ? 1.0 : 2.0;
@@ -993,6 +1082,14 @@ class MountainJourney {
         }
 
         this.bgGroup.position.x = this.camera.position.x * 0.1; 
+
+        // Khóa bầu trời luôn nằm cùng gốc với vị trí mắt người nhìn (Sky Dome)
+        // Tạo cảm giác mây ở xa vô tận, không phình to khi đi tới
+        if (this.bgModel) {
+            this.bgModel.position.copy(this.camera.position);
+            this.bgModel.position.y -= 50; 
+        }
+
         this.updateDebugLog(this.camera.position, this.controls.target);
         this.renderer.render(this.scene, this.camera);
     }

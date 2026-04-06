@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SLOSH Seltzer — Pop the top, get the party started. 4 Flavors, 100% Good Times.">
+  <title>SLOSH Seltzer — Good Times Flowing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ====== LOADING SCREEN ====== -->
+  <div class="loader" id="loader">
+    <div class="loader__text">SLOSH</div>
+    <div class="loader__bar">
+      <div class="loader__bar-fill" id="loader-bar"></div>
+    </div>
+  </div>
+
+  <!-- ====== FIXED CANVAS LAYERS ====== -->
+  <canvas id="bubbles-canvas"></canvas>
+  <canvas id="three-canvas"></canvas>
+
+  <!-- ====== NAVIGATION ====== -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav__logo">SLOSH</a>
+    <ul class="nav__links">
+      <li><a href="#flavor-reveal">Flavors</a></li>
+      <li><a href="#cta">Cheers</a></li>
+      <li>
+        <div class="nav__equalizer" aria-label="Sound toggle">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ====== SIDEBARS ====== -->
+  <div class="sidebar sidebar--left" id="sidebar-left">
+    <span class="sidebar__text" id="sidebar-left-text">4 FLAVORS</span>
+  </div>
+  <div class="sidebar sidebar--right" id="sidebar-right">
+    <span class="sidebar__text" id="sidebar-right-text">GOOD TIMES</span>
+  </div>
+
+  <!-- ====== SCROLL PROGRESS ====== -->
+  <div class="scroll-progress" id="scroll-progress">
+    <div class="scroll-progress__dot active" data-section="0"></div>
+    <div class="scroll-progress__dot" data-section="1"></div>
+    <div class="scroll-progress__dot" data-section="2"></div>
+    <div class="scroll-progress__dot" data-section="3"></div>
+    <div class="scroll-progress__dot" data-section="4"></div>
+    <div class="scroll-progress__dot" data-section="5"></div>
+  </div>
+
+  <!-- ====== MAIN SCROLL CONTENT ====== -->
+  <main id="smooth-wrapper">
+    <div id="smooth-content">
+
+      <!-- ===== SECTION 1: HERO ===== -->
+      <section class="section" id="hero">
+        <div class="section__inner">
+          <div class="hero__content" id="hero-content">
+
+            <!-- Title row: SLOSH [3D] SELTZER -->
+            <div class="hero__title-row">
+              <h1 class="hero__title hero__title--left" id="title-slosh">
+                SLOSH
+              </h1>
+              <div class="hero__3d-space" id="hero-3d-anchor">
+                <!-- 3D Box renders here via Three.js canvas -->
+              </div>
+              <div class="hero__title hero__title--right" id="title-seltzer">
+                SELTZER
+              </div>
+            </div>
+
+            <p class="hero__subtitle" id="hero-subtitle">GET THE PARTY STARTED</p>
+
+            <!-- Decorative elements -->
+            <!-- Squiggle top-left -->
+            <div class="deco deco__squiggle" style="top: 5%; left: 3%;" id="deco-squiggle">
+              <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+                <path d="M5 55C15 20 25 5 40 15C55 25 50 50 65 30C80 10 75 5 75 5" stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+
+            <!-- Sparkles -->
+            <div class="deco deco__sparkle" style="top: 12%; right: 25%;" id="deco-spark1">✦</div>
+            <div class="deco deco__sparkle" style="bottom: 20%; left: 35%;" id="deco-spark2" aria-hidden="true">⚡</div>
+            <div class="deco deco__sparkle" style="top: 40%; right: 15%;" id="deco-spark3" aria-hidden="true">✶</div>
+
+            <!-- POP THE TOP label -->
+            <div class="deco deco__label" style="top: 30%; right: 18%;" id="deco-pop-label">
+              POP THE TOP
+            </div>
+
+            <!-- Arrow around can -->
+            <div class="deco deco__arrow" style="top: 22%; left: 42%;" id="deco-arrow">
+              <svg width="100" height="80" viewBox="0 0 100 80" fill="none">
+                <path d="M10 60 C 20 10, 80 10, 90 60" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" stroke-dasharray="5,5"/>
+                <polygon points="88,55 95,65 82,63" fill="currentColor"/>
+              </svg>
+            </div>
+
+            <!-- Eyes -->
+            <div class="deco deco__eyes" style="top: 38%; right: 10%;" id="deco-eyes">👀</div>
+
+            <!-- Badge: 100% Good Times -->
+            <div class="deco deco__badge" style="bottom: 12%; left: 8%;" id="deco-badge">
+              <div class="starburst">
+                <span class="starburst__text">100%<br>GOOD<br>TIMES</span>
+              </div>
+            </div>
+
+            <!-- 4 Flavors circle text -->
+            <div class="deco deco__circle-text" style="top: 5%; right: 3%;" id="deco-circle">
+              <svg viewBox="0 0 120 120">
+                <defs>
+                  <path id="circlePath" d="M 60,60 m -45,0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0"/>
+                </defs>
+                <text>
+                  <textPath href="#circlePath">4 FLAVORS · 4 FLAVORS · </textPath>
+                </text>
+                <!-- Cherry icon center -->
+                <text x="52" y="65" font-size="22" text-anchor="middle">🍒</text>
+              </svg>
+            </div>
+
+            <!-- X marks -->
+            <div class="deco deco__sparkle" style="bottom: 35%; left: 2%; font-size: 1rem; opacity: 0.5;" aria-hidden="true">✕</div>
+            <div class="deco deco__sparkle" style="bottom: 5%; right: 25%; font-size: 1rem; opacity: 0.5;" aria-hidden="true">✕</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 2: POP / FOAM ===== -->
+      <section class="section" id="pop">
+        <div class="foam-layer" id="foam-layer"></div>
+        
+        <!-- Background floating icons -->
+        <svg width="0" height="0" style="position:absolute; width:0; height:0;">
+          <defs>
+            <!-- Peanut -->
+            <g id="icon-peanut" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M35 25C20 15 10 35 25 50C30 55 35 60 40 55C50 45 60 45 70 55C75 60 80 55 85 50C100 35 90 15 75 25C65 30 55 30 50 25C40 15 45 30 35 25Z" />
+              <path d="M35 35 L50 50 M45 30 L60 45 M65 35 L50 50 M75 30 L60 45" stroke-opacity="0.5" stroke-width="2"/>
+            </g>
+            <!-- Sausage -->
+            <g id="icon-sausage" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+              <rect x="25" y="25" width="50" height="22" rx="11" transform="rotate(-15 50 36)"/>
+              <rect x="18" y="50" width="50" height="22" rx="11" transform="rotate(-15 43 61)"/>
+              <rect x="42" y="60" width="45" height="22" rx="11" transform="rotate(-5 64 71)"/>
+            </g>
+            <!-- Cracker -->
+            <g id="icon-cracker" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M50 10 Q65 10 70 20 Q85 25 85 40 Q95 55 85 70 Q80 85 65 90 Q50 95 35 90 Q20 85 15 70 Q5 55 15 40 Q20 25 35 20 Q40 10 50 10 Z" />
+              <circle cx="30" cy="35" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/><circle cx="50" cy="25" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/><circle cx="70" cy="40" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/>
+              <circle cx="40" cy="60" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/><circle cx="65" cy="65" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/><circle cx="30" cy="70" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/><circle cx="80" cy="55" r="2.5" fill="currentColor" fill-opacity="0.6" stroke="none"/>
+            </g>
+            <!-- Beer Mug -->
+            <g id="icon-beer" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M75 40 Q85 40 85 55 Q85 70 75 70" fill="none"/>
+              <rect x="25" y="30" width="50" height="55" rx="6"/>
+              <path d="M20 30 Q30 20 40 25 Q50 10 65 20 Q80 25 75 35 Q75 50 65 45 Q55 55 45 45 Q35 55 25 40 Q15 45 20 30 Z" fill="currentColor" fill-opacity="0.7"/>
+            </g>
+          </defs>
+        </svg>
+
+        <div class="floating-snacks">
+          <!-- Multi copies of the snacks floating around -->
+          <div class="snack-wrap snack-type1"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-peanut"/></svg></div>
+          <div class="snack-wrap snack-type2"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-sausage"/></svg></div>
+          <div class="snack-wrap snack-type3"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-cracker"/></svg></div>
+          <div class="snack-wrap snack-type4"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-beer"/></svg></div>
+          
+          <div class="snack-wrap snack-type1"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-peanut"/></svg></div>
+          <div class="snack-wrap snack-type3"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-cracker"/></svg></div>
+          <div class="snack-wrap snack-type2"><svg class="snack-icon" viewBox="0 0 100 100"><use href="#icon-sausage"/></svg></div>
+        </div>
+
+        <div class="section__inner pop__inner">
+          <div class="pop__content">
+            <h2 class="pop__title">BIA HÀ NỘI</h2>
+            <p class="pop__desc">Đậm đà hương vị truyền thống. Trải qua hơn một thế kỷ, Bia Hà Nội đã trở thành biểu tượng văn hóa thưởng thức đặc trưng, mang trong mình nét đẹp tinh hoa của mảnh đất nghìn năm văn hiến.</p>
+          </div>
+        </div>
+        <div class="pop__scroll-hint" id="pop-scroll-hint">
+          <span>SCROLL DOWN</span>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 3: SUBMERGE ===== -->
+      <section class="section" id="submerge">
+        <div class="section__inner">
+          <div class="submerge__content" id="submerge-content">
+            <div class="submerge__ghost-text" id="submerge-ghost">
+              GOOD<br>TIMES
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 4: LIQUID TYPOGRAPHY ===== -->
+      <section class="section" id="liquid-type">
+        <div class="section__inner">
+          <div class="liquid__content" id="liquid-content">
+            <div class="liquid__gl-container" id="liquid-gl-container" style="width: 100%; height: 60vh; position: relative;">
+              <!-- WebGL Canvas will be injected here by liquid-text.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 5: FLAVOR REVEAL ===== -->
+      <section class="section" id="flavor-reveal">
+        <div class="flavor__bg-top"></div>
+        <div class="flavor__bg-bottom"></div>
+
+        <!-- Wave divider -->
+        <div class="flavor__wave-divider" id="wave-divider">
+          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style="height: 120px;">
+            <path id="wave-path"
+              d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z"
+              fill="#F5A623"/>
+          </svg>
+        </div>
+
+        <div class="section__inner">
+          <div class="flavor__content" id="flavor-content">
+            <!-- Fruits will be positioned here -->
+          </div>
+        </div>
+
+        <!-- Fruit decorations -->
+        <div class="flavor__fruits" id="flavor-fruits">
+          <div class="fruit" id="fruit-1" style="bottom: 5%; left: 5%;">🍊</div>
+          <div class="fruit" id="fruit-2" style="bottom: 15%; left: 20%;">🍋</div>
+          <div class="fruit" id="fruit-3" style="bottom: 2%; left: 35%;">🫐</div>
+          <div class="fruit" id="fruit-4" style="bottom: 10%; left: 50%;">🍓</div>
+          <div class="fruit" id="fruit-5" style="bottom: 0%; left: 65%;">🍊</div>
+          <div class="fruit" id="fruit-6" style="bottom: 8%; left: 78%;">🍇</div>
+          <div class="fruit" id="fruit-7" style="bottom: 3%; left: 90%;">🍈</div>
+          <div class="fruit" id="fruit-8" style="bottom: 18%; left: 12%;">🥝</div>
+          <div class="fruit" id="fruit-9" style="bottom: 12%; left: 85%;">🍑</div>
+          <div class="fruit" id="fruit-10" style="bottom: 20%; left: 45%;">🍌</div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 6: CTA ===== -->
+      <section class="section" id="cta">
+        <div class="cta__content" id="cta-content">
+          <div class="cta__title" id="cta-title">
+            <span class="cta__title-line cta__title-line--orange" id="cta-line1">MAKE</span>
+            <span class="cta__title-line cta__title-line--white" id="cta-line2">TASTEBUDS</span>
+            <span class="cta__title-line cta__title-line--orange" id="cta-line3">YOUR</span>
+            <span class="cta__title-line cta__title-line--white" id="cta-line4">DANCE</span>
+          </div>
+        </div>
+
+        <!-- Fruit pile CTA -->
+        <div class="cta__fruits-pile" id="cta-fruits">
+          <div class="cta__fruit" style="bottom: 0; right: 5%;">🍊</div>
+          <div class="cta__fruit" style="bottom: 5%; right: 20%;">🍋</div>
+          <div class="cta__fruit" style="bottom: 0; right: 35%;">🫐</div>
+          <div class="cta__fruit" style="bottom: 8%; right: 50%;">🍓</div>
+          <div class="cta__fruit" style="bottom: 2%; right: 10%;">🍇</div>
+          <div class="cta__fruit" style="bottom: 0; right: 65%;">🥝</div>
+          <div class="cta__fruit" style="bottom: 10%; right: 40%;">🍑</div>
+          <div class="cta__fruit" style="bottom: 3%; right: 75%;">🍌</div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ====== SCRIPTS (CDN) ====== -->
+  <!-- GSAP Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <!-- GSAP ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Three.js via importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- App modules -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
