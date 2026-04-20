@@ -81,6 +81,10 @@
 
 \vspace{0.8cm}
 
+%%% Summary
+\NewPart{Summary}{}
+\noindent Software Engineer specializing in \textbf{AI Automation}, \textbf{Full-Stack Development}, and \textbf{System Architecture}. Proven track record in building scalable education platforms, autonomous content pipelines, and advanced AI ecosystems. A results-driven developer who follows the philosophy: \textbf{“I don't just learn, I build to solve.”}
+
 %%% Information
 \NewPart{Information}{}
 \PersonalEntry{Birth}{22/11/1999}
@@ -89,13 +93,14 @@
 \PersonalEntry{Email}{giadung8686@gmail.com}
 
 %%% Skills
+%%% Skills
 \NewPart{Skills}{}
-\SkillsEntry{Programming}{Node.js, JavaScript}
-\SkillsEntry{Frontend}{React, TailwindCSS, HTML, CSS}
-\SkillsEntry{Backend}{Express, REST APIs, WebSockets}
-\SkillsEntry{Databases}{PostgreSQL, MySQL, Redis}
-\SkillsEntry{DevOps}{Docker, PM2, n8n}
-\SkillsEntry{Mindset}{System Thinking, Problem Solving, Rapid Self-Learning}
+\SkillsEntry{Core}{Python, Node.js, TypeScript, SQL}
+\SkillsEntry{AI}{LLM Orchestration, RAG, n8n, Asyncio}
+\SkillsEntry{Back-end}{FastAPI, Mediasoup (WebRTC), Socket.IO, Redis , FFmpeg, MoviePy}
+\SkillsEntry{Infra}{Docker, Supabase, Anti-bot Bypass, DCOM networking}
+\SkillsEntry{Languages}{Vietnamese (Native), English (Basic)}
+
 
 %%% Work Experience
 \NewPart{Work Experience}{}
@@ -138,26 +143,17 @@
 \end{itemize}
 \textbf{Tech Stack}: Python, Playwright, Camoufox, Asyncio, Supabase, Docker, DCOM (Mobile Proxy Box)
 }
-\WorkEntry{Autonomous AI-Video Synthesis Engine (Open-Source Orchestration)}{Solo Development}{6/2025 - Present}{
+\WorkEntry{Money Printer V3}{Solo Development}{6/2025 - Present}{
 \begin{itemize}[noitemsep, topsep=5pt]
-  \item Architected an \textbf{automated video production factory} by orchestrating \textbf{Kestra (OSS)}, \textbf{FFmpeg}, and \textbf{Python} to transform raw data into high-quality short-form content.
+  \item Architected an \textbf{automated video production factory} by orchestrating , \textbf{FFmpeg}, and \textbf{Python} to transform raw data into high-quality short-form content.
   \item Developed complex \textbf{media transformation logic}: implementing dynamic scene assembly, automated subtitling, and multi-layer audio-visual synchronization using \textbf{MoviePy/OpenCV}.
   \item Integrated state-of-the-art \textbf{Open Source Neural TTS} (VieNeu-TTS) and \textbf{Large Language Models} to automate the entire creative workflow from scriptwriting to final rendering.
   \item Optimized throughput with \textbf{NVIDIA CUDA acceleration}, implementing parallel worker queues and resource-locking mechanisms to manage high-VRAM video processing tasks.
 \end{itemize}
-\textbf{Tech Stack}: Python, Kestra, FFmpeg, MoviePy, NVIDIA CUDA, Neural TTS, Streamlit, Docker
+\textbf{Tech Stack}: Python, FFmpeg, MoviePy, NVIDIA CUDA, VieTTS, Supabase, Docker
 }
 
-\WorkEntry{AI-Powered Video Automation Platform (HOCMAI)}{Solo Development}{6/2025 - 8/2025}{
-\begin{itemize}[noitemsep, topsep=5pt]
-  \item Designed \textbf{microservices architecture} (15+ services) using \textbf{Node.js \& Express}.
-  \item Integrated \textbf{Gemini}, \textbf{AssemblyAI}, and \textbf{OpenAI} for AI orchestration.
-  \item Developed high-performance \textbf{FFmpeg pipeline} for automated video editing.
-\end{itemize}
-\textbf{Tech Stack}: Node.js, Express, React, TypeScript, Python, FFmpeg, Gemini AI
-}
-
-\WorkEntry{Advanced 3D Web Experience \& Creative Development}{Solo Development}{2024 - Present}{
+\WorkEntry{3D Web Experience \& Creative Development}{Solo Development}{2024 - Present}{
 \begin{itemize}[noitemsep, topsep=5pt]
   \item Engineered high-performance \textbf{3D Scrollytelling} and \textbf{Gamified interfaces} using \textbf{Three.js} and \textbf{React Three Fiber}.
   \item Implemented \textbf{Procedural Generation} (Perlin Noise) for terrain and \textbf{Inverse Kinematics} for realistic character animations.
