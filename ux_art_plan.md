@@ -1,6 +1,6 @@
 # 🎨 Kế hoạch Thiết kế UI/UX 3D: "I don't just learn, I build to solve."
 
-Với tư cách là một UI/UX Designer kết hợp cùng Creative Developer, mục tiêu của chúng ta là biến câu nói "I don't just learn, I build to solve" không chỉ là text, mà trở thành **Bản sắc Trực quan (Visual Identity)** của toàn bộ trang web. 
+Với tư cách là một 1UI/UX Designer kết hợp cùng Creative Developer, mục tiêu của chúng ta là biến câu nói "I don't just learn, I build to solve" không chỉ là text, mà trở thành **Bản sắc Trực quan (Visual Identity)** của toàn bộ trang web. 
 
 Để giữ được tone màu Monochrome (Đen/Trắng/Xám) chuẩn ReactBits cực kỳ tinh tế hiện tại, lớp "Art 3D" cần phải mang tính trừu tượng, sắc sảo và mang lại trải nghiệm chiều sâu.
 
