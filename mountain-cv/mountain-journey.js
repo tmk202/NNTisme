@@ -48,19 +48,19 @@ class MountainJourney {
 
     setupSeasons() {
         this.seasons = [
-            { name: 'XUÂN', bg: new THREE.Color('#99f6e4'), fog: new THREE.Color('#99f6e4'), light: new THREE.Color('#fcd34d'), particleColor: new THREE.Color('#fdf2f8'), fogDensity: 0.0008 },
-            { name: 'HẠ',   bg: new THREE.Color('#fdba74'), fog: new THREE.Color('#fdba74'), light: new THREE.Color('#fef08a'), particleColor: new THREE.Color('#ffedd5'), fogDensity: 0.0005 },
-            { name: 'THU',  bg: new THREE.Color('#f97316'), fog: new THREE.Color('#f97316'), light: new THREE.Color('#fb923c'), particleColor: new THREE.Color('#ea580c'), fogDensity: 0.001 },
-            { name: 'ĐÔNG', bg: new THREE.Color('#0f172a'), fog: new THREE.Color('#0f172a'), light: new THREE.Color('#94a3b8'), particleColor: new THREE.Color('#ffffff'), fogDensity: 0.0012 }
+            { name: 'XUÂN', bg: new THREE.Color('#99f6e4'), fog: new THREE.Color('#99f6e4'), light: new THREE.Color('#fcd34d'), particleColor: new THREE.Color('#fdf2f8'), fogDensity: 0.0008, weather: 'sunny' },
+            { name: 'HẠ',   bg: new THREE.Color('#fdba74'), fog: new THREE.Color('#fdba74'), light: new THREE.Color('#fef08a'), particleColor: new THREE.Color('#ffedd5'), fogDensity: 0.0005, weather: 'rainy' },
+            { name: 'THU',  bg: new THREE.Color('#f97316'), fog: new THREE.Color('#f97316'), light: new THREE.Color('#fb923c'), particleColor: new THREE.Color('#ea580c'), fogDensity: 0.001, weather: 'rainy' },
+            { name: 'ĐÔNG', bg: new THREE.Color('#0f172a'), fog: new THREE.Color('#0f172a'), light: new THREE.Color('#94a3b8'), particleColor: new THREE.Color('#ffffff'), fogDensity: 0.0012, weather: 'snowy' }
         ];
     }
 
     setupMilestones() {
         this.milestones = [
-            { x: -140, title: "KHỞI ĐẦU", year: "2021", detail: "Junior Dev" },
-            { x: -70,  title: "BỨC PHÁ", year: "2023", detail: "Fullstack Leader" },
-            { x: 10,   title: "LÃNH ĐẠO", year: "2024", detail: "CTO Startup" },
-            { x: 80,   title: "ĐỈNH CAO", year: "2026", detail: "AI Architect" }
+            { x: -100, title: "KHỞI ĐẦU", year: "2021", detail: "Junior Dev" },
+            { x:  150, title: "BỨC PHÁ",  year: "2023", detail: "Fullstack Leader" },
+            { x:  400, title: "LÃNH ĐẠO", year: "2024", detail: "CTO Startup" },
+            { x:  680, title: "ĐỈNH CAO", year: "2026", detail: "AI Architect" }
         ];
     }
 
@@ -112,92 +112,190 @@ class MountainJourney {
 
     getMountainTopography(worldX, worldZ) {
         const vx = worldX;
-        const vy = -worldZ; 
-        const spineOffset = Math.sin(vx * 0.05) * 18 + Math.sin(vx * 0.015) * 22;
+        const vy = -worldZ;
+        // Spine uốn lượn hùng vĩ hơn
+        const spineOffset = Math.sin(vx * 0.045) * 24 + Math.sin(vx * 0.012) * 30;
         const distFromSpine = Math.abs(vy - spineOffset);
-        
-        // ĐẠI LỘ TRÊN ĐỈNH NÚI (SIÊU RỘNG): Rộng 22 unit để đi bộ thoải mái tuyệt đối
-        const plateauWidth = 22; 
+
+        const plateauWidth = 18; // Đường sống núi hẹp hơn → sắc cạnh low-poly rõ nét
         const distFromPeak = Math.abs(vx - 100);
-        
-        // Đỉnh núi thấp và thoải hơn
-        const peakHeight = 110 * Math.exp(-Math.pow(distFromPeak / 250, 2));
-        const vertebrae = Math.sin(vx * 0.08) * 8; // Nhịp điệu lên xuống cực khẽ
-        
-        // CHỈ SỐ LÀM PHẲNG MẶT ĐƯỜNG: Ở trong plateau thì không có nhiễu nát
-        const smoothFactor = Math.min(1, Math.pow(Math.max(0, distFromSpine - 10) / 15, 2));
-        
-        // Sườn núi đổ xuống thoai thoải (sharpness 60 thay vì 40)
-        const ridgeSharpness = 60; 
-        const abyssDrop = Math.pow(Math.max(0, distFromSpine - plateauWidth) / ridgeSharpness, 1.5) * 100;
-        
-        const craggy = Math.sin(vx * 1.5) * Math.cos(vy * 1.5) * 3 * smoothFactor;
-        const jagged = Math.sin(vx * 0.8) * Math.cos(vy * 0.5) * 2 * smoothFactor;
-        
+
+        // Đỉnh núi chính
+        const peakHeight = 140 * Math.exp(-Math.pow(distFromPeak / 250, 2));
+        // Đỉnh phụ làm mượt hơn để tránh dốc gắt (giảm biên độ)
+        const secondPeak = 40 * Math.exp(-Math.pow((vx + 60) / 120, 2));
+        const thirdPeak  = 25 * Math.exp(-Math.pow((vx + 130) / 100, 2));
+        // Vertebrae (nhịp gập ghềnh) kéo giãn và làm thấp hơn để tránh dốc cục bộ > 35 độ
+        const vertebrae  = Math.sin(vx * 0.04) * 6 + Math.sin(vx * 0.1) * 3;
+
+        const smoothFactor = Math.min(1, Math.pow(Math.max(0, distFromSpine - 8) / 12, 2));
+
+        // Sườn dốc thoải hơn, không quá dựng đứng
+        const ridgeSharpness = 55;
+        const abyssDrop = Math.pow(Math.max(0, distFromSpine - plateauWidth) / ridgeSharpness, 1.25) * 110;
+
+        // Thêm nhiễu góc cạnh trên sườn
+        const craggy = (Math.sin(vx * 1.8) * Math.cos(vy * 1.5) * 4
+                      + Math.sin(vx * 0.9) * Math.cos(vy * 1.1) * 3) * smoothFactor;
+        const jagged  = Math.sin(vx * 1.3) * Math.cos(vy * 0.7) * 2 * smoothFactor;
+
         return {
-            height: peakHeight + vertebrae - abyssDrop + jagged + craggy,
-            spineZ: -spineOffset 
+            height: peakHeight + secondPeak + thirdPeak + vertebrae - abyssDrop + jagged + craggy,
+            spineZ: -spineOffset
         };
     }
 
     getSpineTopography(worldX) {
-        const spineOffset = Math.sin(worldX * 0.05) * 18 + Math.sin(worldX * 0.015) * 22;
+        const spineOffset = Math.sin(worldX * 0.045) * 24 + Math.sin(worldX * 0.012) * 30;
         const distFromPeak = Math.abs(worldX - 100);
-        const peakHeight = 140 * Math.exp(-Math.pow(distFromPeak / 200, 2));
-        const vertebrae = Math.sin(worldX * 0.1) * 12 + Math.sin(worldX * 0.25) * 6;
-        // Loại bỏ gai nhiễu cường độ cao khi tính toán bề mặt cạo lên cho bàn chân (Tránh giật giật)
-        const smoothedJagged = Math.sin(worldX * 0.8) * Math.cos(spineOffset * 0.5) * 0.5;
         
+        const peakHeight = 140 * Math.exp(-Math.pow(distFromPeak / 250, 2));
+        const secondPeak = 40 * Math.exp(-Math.pow((worldX + 60) / 120, 2));
+        const thirdPeak  = 25 * Math.exp(-Math.pow((worldX + 130) / 100, 2));
+        const vertebrae  = Math.sin(worldX * 0.04) * 6 + Math.sin(worldX * 0.1) * 3;
+        
+        // Nhiễu trên mặt đường mòn cực nhỏ để tránh nhấp nhô gây lún chân
+        const smoothedJagged = Math.sin(worldX * 0.4) * Math.cos(spineOffset * 0.4) * 0.2;
+
         return {
             x: worldX,
-            y: peakHeight + vertebrae + smoothedJagged, 
+            y: peakHeight + secondPeak + thirdPeak + vertebrae + smoothedJagged,
             z: -spineOffset
         };
     }
 
     buildMiddlegroundSlope() {
-        // Kéo rộng chiều Y (ngang) của tấm PlaneGeometry ra 400 để sườn núi phình to
-        const geo = new THREE.PlaneGeometry(600, 400, 500, 120); 
+        // === LỚP NÚI CHÍNH: Giảm số segments xuống để lưới Grid vuông vức (200x140) => đúng chất Low Poly thay vì bị kéo dãn! ===
+        const geo = new THREE.PlaneGeometry(2200, 600, 500, 150);
         const pos = geo.attributes.position;
         for (let i = 0; i < pos.count; i++) {
-            const vx = pos.getX(i); 
-            const vy = pos.getY(i); 
+            const vx = pos.getX(i);
+            const vy = pos.getY(i);
             const topo = this.getMountainTopography(vx, -vy);
             pos.setZ(i, topo.height);
         }
         geo.computeVertexNormals();
-        const mat = new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.9, flatShading: true });
+        // Màu đá lạnh xanh-tím đặc trưng low-poly art
+        const mat = new THREE.MeshStandardMaterial({ color: '#1b2b40', roughness: 0.95, flatShading: true });
         this.mainMountain = new THREE.Mesh(geo, mat);
         this.mainMountain.rotation.x = -Math.PI / 2;
         this.mainMountain.castShadow = true;
         this.mainMountain.receiveShadow = true;
         this.mgGroup.add(this.mainMountain);
+
+        // === LỚP TUYẾT TRÊN ĐỈNH: Khớp segments với mesh gốc ===
+        const snowGeo = new THREE.PlaneGeometry(2200, 600, 500, 150);
+        const snowPos = snowGeo.attributes.position;
+        const snowThreshold = 80; // Tuyết chỉ phủ trên độ cao 80
+        for (let i = 0; i < snowPos.count; i++) {
+            const vx = snowPos.getX(i);
+            const vy = snowPos.getY(i);
+            const topo = this.getMountainTopography(vx, -vy);
+            const h = topo.height;
+            // Nâng lớp tuyết cao hơn mặt đá 0.3 unit & chỉ giữ vùng cao
+            snowPos.setZ(i, h > snowThreshold ? h + 0.3 : -999);
+        }
+        snowGeo.computeVertexNormals();
+        const snowMat = new THREE.MeshStandardMaterial({
+            color: '#e8f4ff', emissive: '#a8d4f0', emissiveIntensity: 0.12,
+            roughness: 0.4, flatShading: true, transparent: true, opacity: 0.92
+        });
+        const snowCap = new THREE.Mesh(snowGeo, snowMat);
+        snowCap.rotation.x = -Math.PI / 2;
+        snowCap.position.y = 0.2;
+        this.mgGroup.add(snowCap);
+
+        // === LỚP ĐÁ MID-GROUND: Dải núi trung cảnh cách xa để tạo parallax ===
+        const midGeo = new THREE.PlaneGeometry(2600, 300, 450, 60);
+        const midPos = midGeo.attributes.position;
+        for (let i = 0; i < midPos.count; i++) {
+            const vx = midPos.getX(i) * 0.6; // Thu nhỏ theo X để khớp tỉ lệ xa
+            const vy = midPos.getY(i);
+            const topo = this.getMountainTopography(vx, -vy * 0.8);
+            // Lớp này thấp hơn (scale 0.5) và đặt lui sau
+            midPos.setZ(i, topo.height * 0.55 - 20);
+        }
+        midGeo.computeVertexNormals();
+        const midMat = new THREE.MeshStandardMaterial({ color: '#263a52', roughness: 1.0, flatShading: true });
+        const midLayer = new THREE.Mesh(midGeo, midMat);
+        midLayer.rotation.x = -Math.PI / 2;
+        midLayer.position.set(0, -2, -80); // Đặt lui sau núi chính
+        this.mgGroup.add(midLayer);
     }
 
     buildDetails() {
-        const rockCount = 150;
-        // Đổi từ gai nhọn hoắt thành Tảng đá lăn tự nhiên hình đa diện
-        const rockGeo = new THREE.DodecahedronGeometry(2.5, 0); 
-        const rockMat = new THREE.MeshStandardMaterial({ color: '#0f172a', flatShading: true });
-        const rocks = new THREE.InstancedMesh(rockGeo, rockMat, rockCount);
-        rocks.castShadow = true;
-        rocks.receiveShadow = true;
-
         const dummy = new THREE.Object3D();
-        for (let i = 0; i < rockCount; i++) {
-            const rx = (Math.random() - 0.5) * 580;
-            const topo = this.getMountainTopography(rx, 0); 
-            const ry = -topo.spineZ + (Math.random() - 0.5) * 20; // Rải rộng đá hai bên dốc hơn
+
+        // === TẢNG ĐÁ LỚN (Boulders) - Nổi bật trên sườn núi ===
+        const boulderCount = 80;
+        const boulderGeo = new THREE.IcosahedronGeometry(1, 0); // Low-poly cực đỉnh
+        const boulderMat = new THREE.MeshStandardMaterial({ color: '#0d1f31', roughness: 1.0, flatShading: true });
+        const boulders = new THREE.InstancedMesh(boulderGeo, boulderMat, boulderCount);
+        boulders.castShadow = true; boulders.receiveShadow = true;
+        for (let i = 0; i < boulderCount; i++) {
+            const rx = -180 + Math.random() * 1060;
+            const topo = this.getMountainTopography(rx, 0);
+            // Ép đá lệch sang hai bên ít nhất 10 unit so với trục đường
+            const sideOffset = (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 25);
+            const ry = -topo.spineZ + sideOffset;
             const topoFinal = this.getMountainTopography(rx, -ry);
-            const rz = topoFinal.height - 2; 
-            dummy.position.set(rx, rz, -ry);
-            dummy.rotation.set(Math.random() * 0.4, Math.random() * Math.PI, Math.random() * 0.4);
-            // Kích thước đá ngẫu nhiên dẹt lùn
-            dummy.scale.set(1 + Math.random()*1.5, 0.5 + Math.random()*1.5, 1 + Math.random()*1.5);
+            dummy.position.set(rx, topoFinal.height - 1, -ry);
+            dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            // Đá to: mix giữa khối vuông và khổng lồ
+            const bSize = 2.5 + Math.random() * 6.5;
+            dummy.scale.set(bSize * (0.7 + Math.random() * 0.6), bSize * (0.5 + Math.random() * 0.8), bSize * (0.7 + Math.random() * 0.6));
+            dummy.updateMatrix();
+            boulders.setMatrixAt(i, dummy.matrix);
+        }
+        this.mgGroup.add(boulders);
+
+        // === ĐÁ VỪA (Rubble) - Rải khắp sườn ===
+        const rockCount = 200;
+        const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+        const rockMat = new THREE.MeshStandardMaterial({ color: '#162132', roughness: 0.95, flatShading: true });
+        const rocks = new THREE.InstancedMesh(rockGeo, rockMat, rockCount);
+        rocks.castShadow = true; rocks.receiveShadow = true;
+        for (let i = 0; i < rockCount; i++) {
+            const rx = -180 + Math.random() * 1060;
+            const topo = this.getMountainTopography(rx, 0);
+            // Ép đá dăm lệch sang hai bên
+            const sideOffset = (Math.random() > 0.5 ? 1 : -1) * (9 + Math.random() * 30);
+            const ry = -topo.spineZ + sideOffset;
+            const topoFinal = this.getMountainTopography(rx, -ry);
+            dummy.position.set(rx, topoFinal.height - 0.5, -ry);
+            dummy.rotation.set(Math.random() * 0.6, Math.random() * Math.PI, Math.random() * 0.6);
+            const rSize = 0.8 + Math.random() * 2.8;
+            dummy.scale.set(rSize, rSize * (0.4 + Math.random() * 0.8), rSize);
             dummy.updateMatrix();
             rocks.setMatrixAt(i, dummy.matrix);
         }
         this.mgGroup.add(rocks);
+
+        // === KHỐI ĐÁ SÁNG (Accent rocks - màu xám sáng để tạo tương phản) ===
+        const accentCount = 40;
+        const accentGeo = new THREE.TetrahedronGeometry(1, 0); // Tứ diện - rất low-poly nhọn
+        const accentMat = new THREE.MeshStandardMaterial({
+            color: '#3d5a73', emissive: '#1a3040', emissiveIntensity: 0.3, roughness: 0.7, flatShading: true
+        });
+        const accents = new THREE.InstancedMesh(accentGeo, accentMat, accentCount);
+        accents.castShadow = true;
+        for (let i = 0; i < accentCount; i++) {
+            const rx = -180 + Math.random() * 1060;
+            const topo = this.getMountainTopography(rx, 0);
+            const sideOffset = (Math.random() > 0.5 ? 1 : -1) * (8 + Math.random() * 20);
+            const ry = -topo.spineZ + sideOffset;
+            const topoFinal = this.getMountainTopography(rx, -ry);
+            // Chỉ đặt accent rocks ở vùng cao (gần đỉnh)
+            if (topoFinal.height > 40) {
+                dummy.position.set(rx, topoFinal.height, -ry);
+                dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                const aSize = 3 + Math.random() * 8;
+                dummy.scale.set(aSize * 0.6, aSize, aSize * 0.6);
+                dummy.updateMatrix();
+                accents.setMatrixAt(i, dummy.matrix);
+            }
+        }
+        this.mgGroup.add(accents);
 
         // --- DỰNG CÁC MỐC HOLOGAM ---
         this.markers = [];
@@ -228,22 +326,29 @@ class MountainJourney {
         const fsGeo = new THREE.BufferGeometry();
         const fsCount = 100;
         const fsPos = new Float32Array(fsCount * 3);
-        const fsVel = new Float32Array(fsCount * 3);
-        const fsLife = new Float32Array(fsCount);
-        for(let i=0; i<fsCount; i++) fsLife[i] = -1; // trạng thái chết
+        this.fsVel = new Float32Array(fsCount * 3);
+        this.fsLife = new Float32Array(fsCount);
+        for(let i=0; i<fsCount; i++) this.fsLife[i] = -1; // trạng thái chết
+
+        fsGeo.setAttribute('position', new THREE.BufferAttribute(fsPos, 3));
+        this.fsPoints = new THREE.Points(fsGeo, new THREE.PointsMaterial({ 
+            size: 0.6, transparent: true, opacity: 0.8, color: '#ffffff' 
+        }));
+        this.mgGroup.add(this.fsPoints);
     }
 
     buildSeasonalDecorations() {
         const startX = -180;
-        const endX = 110;
-        const step = 4.5; // Tăng mật độ cây (dày hơn gấp đôi)
+        const endX = 820;
+        const step = 4.0; // Tăng mật độ cây một chút
 
         const trunkMat = new THREE.MeshStandardMaterial({ color: '#4d2c19', roughness: 0.9 });
         
         for (let x = startX; x < endX; x += step) {
             const topo = this.getSpineTopography(x);
-            // Phân tán rộng sang 2 bên sườn núi (tới 35 unit)
-            const sideOffset = (Math.random() - 0.5) * 45; 
+            // Ép cây mọc sang 2 bên sườn núi (tránh lối đi 7 unit ở giữa)
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const sideOffset = side * (7 + Math.random() * 25); 
             const z = topo.z + sideOffset;
             const y = this.getMountainTopography(x, z).height;
 
@@ -259,78 +364,152 @@ class MountainJourney {
 
             if (progress < 0.25) { // === XUÂN ===
                 const rand = Math.random();
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 4), trunkMat);
-                trunk.position.y = 2; group.add(trunk);
 
-                if (rand > 0.7) { // Cây Liễu (Willow - Loại cây mới)
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#bef264', roughness: 0.8 });
-                    for(let i=0; i<6; i++) {
-                        const leaf = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3), leafMat);
-                        leaf.position.set(Math.sin(i)*1.2, 4, Math.cos(i)*1.2);
-                        leaf.rotation.x = 0.5; group.add(leaf);
+                if (rand > 0.65) {
+                    // HOA ANH DAO (Sakura) — tan cau hong nhieu lop
+                    const lightBarkMat = new THREE.MeshStandardMaterial({ color: '#6b3c2a', roughness: 0.85 });
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.28, 5, 6), lightBarkMat);
+                    trunk.position.y = 2.5; group.add(trunk);
+
+                    const pinkMat  = new THREE.MeshStandardMaterial({ color: '#f9a8d4', roughness: 0.75, flatShading: true });
+                    const whiteMat = new THREE.MeshStandardMaterial({ color: '#fce7f3', roughness: 0.75, flatShading: true });
+
+                    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0, 0), pinkMat);
+                    core.position.y = 5.2;
+                    core.rotation.set(Math.random(), Math.random(), Math.random());
+                    group.add(core);
+
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i / 5) * Math.PI * 2;
+                        const mat   = i % 2 === 0 ? pinkMat : whiteMat;
+                        const r     = 1.2 + Math.random() * 0.4;
+                        const sub   = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), mat);
+                        sub.position.set(Math.sin(angle) * 1.9, 4.8 + (Math.random() - 0.5) * 1.0, Math.cos(angle) * 1.9);
+                        sub.rotation.set(Math.random(), Math.random(), Math.random());
+                        group.add(sub);
                     }
-                } else if (rand > 0.4) { // Cây Rẻ Quạt Xanh
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#86efac', roughness: 0.8 });
-                    for(let i=0; i<4; i++) {
-                        const leaf = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5, 0), leafMat);
-                        leaf.position.set(Math.sin(i)*1.5, 4 + i*0.3, Math.cos(i)*1.5);
-                        leaf.scale.set(1.5, 0.4, 1.5); group.add(leaf);
-                    }
-                } else { // Hoa Anh Đào
-                    const leafMat = new THREE.MeshStandardMaterial({ color: '#fecdd3', roughness: 0.8 });
-                    for(let i=0; i<3; i++) {
-                        const leaf = new THREE.Mesh(new THREE.SphereGeometry(1.4, 5, 5), leafMat);
-                        leaf.position.set(Math.sin(i*2)*1.0, 3.8 + i*0.6, Math.cos(i*2)*1.0);
+                    const top = new THREE.Mesh(new THREE.IcosahedronGeometry(1.1, 0), whiteMat);
+                    top.position.y = 7.0;
+                    top.rotation.set(Math.random(), Math.random(), Math.random());
+                    group.add(top);
+
+                } else if (rand > 0.32) {
+                    // LIEU THUY DUONG (Weeping Willow) — tan ellipse ru xuong
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.32, 6, 6), trunkMat);
+                    trunk.position.y = 3; trunk.rotation.z = 0.06; group.add(trunk);
+
+                    const freshGreen = new THREE.MeshStandardMaterial({ color: '#86efac', roughness: 0.9, flatShading: true });
+                    const lightGreen = new THREE.MeshStandardMaterial({ color: '#bbf7d0', roughness: 0.9, flatShading: true });
+
+                    const canopy = new THREE.Mesh(new THREE.IcosahedronGeometry(2.4, 0), freshGreen);
+                    canopy.position.y = 6.5;
+                    canopy.scale.set(1.0, 0.55, 1.0);
+                    canopy.rotation.set(Math.random(), Math.random(), Math.random());
+                    group.add(canopy);
+
+                    for (let i = 0; i < 7; i++) {
+                        const angle  = (i / 7) * Math.PI * 2;
+                        const radius = 2.0 + Math.random() * 0.5;
+                        const drop   = Math.random() * 1.4;
+                        const mat    = i % 3 === 0 ? lightGreen : freshGreen;
+                        const leaf   = new THREE.Mesh(new THREE.IcosahedronGeometry(0.85 + Math.random() * 0.3, 0), mat);
+                        leaf.position.set(Math.sin(angle) * radius, 5.8 - drop, Math.cos(angle) * radius);
+                        leaf.scale.set(0.9, 1.6, 0.9);
+                        leaf.rotation.set(Math.random() * 0.3, Math.random(), Math.random() * 0.3);
                         group.add(leaf);
+                    }
+
+                } else {
+                    // BUI HOA XUAN — bui tron + hoa diem xuyet
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.22, 3, 5), trunkMat);
+                    trunk.position.y = 1.5; group.add(trunk);
+
+                    const foliageMat = new THREE.MeshStandardMaterial({ color: '#d9f99d', roughness: 0.85, flatShading: true });
+                    const flowerMat1 = new THREE.MeshStandardMaterial({ color: '#f0abfc', roughness: 0.8,  flatShading: true });
+                    const flowerMat2 = new THREE.MeshStandardMaterial({ color: '#fda4af', roughness: 0.8,  flatShading: true });
+
+                    const base = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0, 0), foliageMat);
+                    base.position.y = 3.4;
+                    base.scale.set(1.0, 0.8, 1.0);
+                    base.rotation.set(Math.random(), Math.random(), Math.random());
+                    group.add(base);
+
+                    [-1.4, 1.4].forEach((ox) => {
+                        const side = new THREE.Mesh(new THREE.IcosahedronGeometry(1.3, 0), foliageMat);
+                        side.position.set(ox, 2.8 + Math.random() * 0.4, (Math.random() - 0.5) * 0.8);
+                        side.scale.set(1.0, 0.75, 1.0);
+                        side.rotation.set(Math.random(), Math.random(), Math.random());
+                        group.add(side);
+                    });
+
+                    for (let i = 0; i < 5; i++) {
+                        const mat    = i % 2 === 0 ? flowerMat1 : flowerMat2;
+                        const flower = new THREE.Mesh(new THREE.DodecahedronGeometry(0.45, 0), mat);
+                        flower.position.set((Math.random() - 0.5) * 2.8, 4.0 + Math.random() * 1.0, (Math.random() - 0.5) * 2.8);
+                        flower.rotation.set(Math.random(), Math.random(), Math.random());
+                        group.add(flower);
                     }
                 }
                 
             } else if (progress < 0.5) { // === HẠ ===
                 const rand = Math.random();
-                if (rand > 0.6) { // Cây Thông Cao
-                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 6), trunkMat);
+                if (rand > 0.6) { // Cây Thông (Pine tree)
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.6, 6, 5), trunkMat);
                     trunk.position.y = 3; group.add(trunk);
-                    const pineMat = new THREE.MeshStandardMaterial({ color: '#064e3b', roughness: 0.9 });
+                    const pineMat = new THREE.MeshStandardMaterial({ color: '#064e3b', roughness: 0.9, flatShading: true });
                     for(let i=0; i<3; i++) {
-                        const layer = new THREE.Mesh(new THREE.ConeGeometry(2.5 - i*0.5, 3.5, 4), pineMat);
-                        layer.position.y = 4.5 + i*1.8; group.add(layer);
+                        // 5 segments for low-poly cone
+                        const layer = new THREE.Mesh(new THREE.ConeGeometry(2.8 - i*0.6, 3.8, 5), pineMat);
+                        layer.position.y = 4.5 + i*1.8;
+                        layer.rotation.y = Math.random() * Math.PI;
+                        group.add(layer);
                     }
-                } else if (rand > 0.3) { // Cây Sồi (Oak - Loại mới)
-                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 4), trunkMat);
+                } else if (rand > 0.3) { // Cây Sồi (Oak)
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.8, 4, 5), trunkMat);
                     trunk.position.y = 2; group.add(trunk);
-                    const oakMat = new THREE.MeshStandardMaterial({ color: '#166534', roughness: 0.7 });
-                    const leaves = new THREE.Mesh(new THREE.IcosahedronGeometry(2.5, 1), oakMat);
-                    leaves.position.y = 4; group.add(leaves);
-                } else { // Bụi rậm rạp
-                    const bushMat = new THREE.MeshStandardMaterial({ color: '#14532d', roughness: 0.7 });
-                    for(let i=0; i<6; i++) {
-                        const bush = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2 + Math.random(), 0), bushMat);
+                    const oakMat = new THREE.MeshStandardMaterial({ color: '#14532d', roughness: 0.8, flatShading: true });
+                    for(let i=0; i<3; i++) {
+                        const leaf = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0, 0), oakMat);
+                        leaf.position.set((Math.random()-0.5)*1.5, 3.8 + i, (Math.random()-0.5)*1.5);
+                        leaf.rotation.set(Math.random(), Math.random(), Math.random());
+                        group.add(leaf);
+                    }
+                } else { // Bụi cỏ lởm chởm
+                    const bushMat = new THREE.MeshStandardMaterial({ color: '#166534', roughness: 0.9, flatShading: true });
+                    for(let i=0; i<4; i++) {
+                        const bush = new THREE.Mesh(new THREE.TetrahedronGeometry(1.5 + Math.random(), 0), bushMat);
                         bush.position.set((Math.random()-0.5)*3, 0.5+Math.random(), (Math.random()-0.5)*3);
+                        bush.rotation.set(Math.random(), Math.random(), Math.random());
                         group.add(bush);
                     }
                 }
             } else if (progress < 0.75) { // === THU ===
                 const isYellow = Math.random() > 0.5;
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 4), trunkMat);
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 4, 5), trunkMat);
                 trunk.position.y = 2; group.add(trunk);
 
-                const leafColor = isYellow ? '#fbbf24' : '#b91c1c'; 
-                const fallMat = new THREE.MeshStandardMaterial({ color: leafColor, roughness: 0.9 });
+                const leafColor = isYellow ? '#f59e0b' : '#b91c1c'; 
+                const fallMat = new THREE.MeshStandardMaterial({ color: leafColor, roughness: 0.9, flatShading: true });
                 for(let i=0; i<4; i++) {
-                    const leaf = new THREE.Mesh(new THREE.DodecahedronGeometry(1.6, 0), fallMat);
-                    leaf.position.set(Math.sin(i*1.5)*1.2, 4.5 + i*0.5, Math.cos(i*1.5)*1.2);
+                    const leaf = new THREE.Mesh(new THREE.DodecahedronGeometry(1.8, 0), fallMat);
+                    leaf.position.set(Math.sin(i*1.5)*1.4, 4.2 + i*0.6, Math.cos(i*1.5)*1.4);
+                    leaf.rotation.set(Math.random(), Math.random(), Math.random());
                     group.add(leaf);
                 }
             } else { // === ĐÔNG ===
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 6), trunkMat);
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 6, 5), trunkMat);
                 trunk.position.y = 3; group.add(trunk);
-                const snowMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.4 });
+                const snowPineMat = new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.6, flatShading: true });
                 for(let i=0; i<3; i++) {
-                    const layer = new THREE.Mesh(new THREE.ConeGeometry(2.5 - i*0.5, 4, 4), snowMat);
-                    layer.position.y = 5 + i*2.0; group.add(layer);
+                    const layer = new THREE.Mesh(new THREE.ConeGeometry(2.6 - i*0.5, 4, 5), snowPineMat);
+                    layer.position.y = 5 + i*2.0;
+                    layer.rotation.y = Math.random() * Math.PI;
+                    group.add(layer);
                 }
-                const rockExtra = new THREE.Mesh(new THREE.IcosahedronGeometry(2.5, 0), new THREE.MeshStandardMaterial({ color: '#f8fafc' }));
-                rockExtra.position.y = 0.5; group.add(rockExtra);
+                const rockExtra = new THREE.Mesh(new THREE.DodecahedronGeometry(1.8, 0), new THREE.MeshStandardMaterial({ color: '#e2e8f0', flatShading: true }));
+                rockExtra.position.set((Math.random()-0.5)*2, 0.5, (Math.random()-0.5)*2);
+                rockExtra.rotation.set(Math.random(), Math.random(), Math.random());
+                group.add(rockExtra);
             }
             this.mgGroup.add(group);
         }
@@ -349,7 +528,7 @@ class MountainJourney {
         const shoesMat    = new THREE.MeshStandardMaterial({ color: '#0a0a12', roughness: 0.3, metalness: 0.2 });
         const hairMat     = new THREE.MeshStandardMaterial({ color: '#1a0a00', roughness: 0.9 });
         const briefMat    = new THREE.MeshStandardMaterial({ color: '#3b1a08', roughness: 0.7 });
-        const sweatMat    = new THREE.MeshStandardMaterial({ color: '#aedff7', transparent: true, opacity: 0.75 });
+        this.sweatMat     = new THREE.MeshStandardMaterial({ color: '#aedff7', transparent: true, opacity: 0.75 });
 
         // === THÂN ===
         this.torso = new THREE.Group();
@@ -559,83 +738,184 @@ class MountainJourney {
     }
 
     buildBackground() {
-        // --- DÃY NÚI SIÊU KHỔNG LỒ & RÕ NÉT ---
-        const bgMtnMat = new THREE.MeshStandardMaterial({ color: '#2a3b52', roughness: 0.8, flatShading: true });
-        const snowMat = new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 0.3, roughness: 0.4 });
-
-        for(let i=0; i<35; i++) {
+        // === TẦNG NÚI XA XÔI (Silhouette Hùng Vĩ) ===
+        const mtMat = new THREE.MeshStandardMaterial({ roughness: 1.0, flatShading: true });
+        
+        for (let i = 0; i < 40; i++) {
             const group = new THREE.Group();
-            const radius = 120 + Math.random() * 150; // Núi to hơn hẳn
-            const heightScale = 2.0 + Math.random() * 3.5;
-            
-            const geo = new THREE.IcosahedronGeometry(radius, 1);
-            const mountain = new THREE.Mesh(geo, bgMtnMat);
-            mountain.scale.set(1, heightScale, 1);
-            
-            // Đẩy núi lại gần camera hơn (z = -400) để thấy rõ chi tiết đá
-            group.position.set((Math.random() - 0.5) * 1800, -80, -400 - Math.random() * 500);
-            group.rotation.y = Math.random() * Math.PI;
-            group.add(mountain);
+            const type = Math.random();
+            let geo;
+            let color;
+            let pos;
 
-            // Chóp tuyết sáng rực (Emissive)
-            if (Math.random() > 0.1) {
-                const snowGeo = new THREE.IcosahedronGeometry(radius * 0.65, 1);
-                const cap = new THREE.Mesh(snowGeo, snowMat);
-                cap.scale.set(1.15, 1.6, 1.15);
-                cap.position.y = radius * heightScale * 0.45;
-                group.add(cap);
+            if (type > 0.6) { // Núi xa nhất - nhọn hoắt
+                geo = new THREE.ConeGeometry(150 + Math.random() * 200, 400 + Math.random() * 400, 3);
+                color = '#0d1b2a';
+                pos = new THREE.Vector3((Math.random() - 0.5) * 3000, -150, -1000 - Math.random() * 800);
+            } else if (type > 0.3) { // Núi trung cảnh - 4 mặt
+                geo = new THREE.ConeGeometry(100 + Math.random() * 150, 300 + Math.random() * 300, 4);
+                color = '#1a2b3c';
+                pos = new THREE.Vector3((Math.random() - 0.5) * 2000, -100, -500 - Math.random() * 400);
+            } else { // Rặng núi nhấp nhô - icosahedron
+                geo = new THREE.IcosahedronGeometry(80 + Math.random() * 100, 0);
+                color = '#243d58';
+                pos = new THREE.Vector3((Math.random() - 0.5) * 1500, -50, -300 - Math.random() * 200);
             }
+
+            // --- THÊM NOISE CHO ĐÁ (Craggy effect) ---
+            const vPos = geo.attributes.position;
+            for (let j = 0; j < vPos.count; j++) {
+                vPos.setX(j, vPos.getX(j) + (Math.random() - 0.5) * 20);
+                vPos.setY(j, vPos.getY(j) + (Math.random() - 0.5) * 20);
+                vPos.setZ(j, vPos.getZ(j) + (Math.random() - 0.5) * 20);
+            }
+            geo.computeVertexNormals();
+
+            const mesh = new THREE.Mesh(geo, mtMat.clone());
+            mesh.material.color.set(color);
+            mesh.rotation.y = Math.random() * Math.PI;
+            mesh.scale.set(1, 2.0 + Math.random() * 1.5, 1);
+            group.position.copy(pos);
+            group.add(mesh);
+
+            // Chóp tuyết cho núi cao - cũng áp dụng noise
+            if (type > 0.4 && Math.random() > 0.2) {
+                const snowGeo = new THREE.ConeGeometry(geo.parameters.radius * 0.65, geo.parameters.height * 0.45, geo.type === 'ConeGeometry' ? geo.parameters.radialSegments : 4);
+                const sPos = snowGeo.attributes.position;
+                for (let j = 0; j < sPos.count; j++) {
+                    sPos.setX(j, sPos.getX(j) + (Math.random() - 0.5) * 8);
+                    sPos.setZ(j, sPos.getZ(j) + (Math.random() - 0.5) * 8);
+                }
+                const snow = new THREE.Mesh(snowGeo, new THREE.MeshStandardMaterial({ color: '#ffffff', flatShading: true }));
+                snow.position.y = geo.parameters.height * 0.38;
+                group.add(snow);
+            }
+
             this.bgGroup.add(group);
         }
 
-        // --- ĐÁM MÂY LOW-POLY (DETAIL CLUSTERS) ---
+        // === MÂY LOW-POLY: To, tích tụ thành dải ===
         this.clouds = [];
-        const cloudMat = new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: 0.8, flatShading: true });
-        for(let i=0; i<15; i++) {
+        for (let i = 0; i < 35; i++) {
             const cloud = new THREE.Group();
-            for(let j=0; j<6; j++) {
-                const part = new THREE.Mesh(new THREE.DodecahedronGeometry(5 + Math.random()*5, 0), cloudMat);
-                part.position.set(j*6 + (Math.random()-0.5)*10, (Math.random()-0.5)*8, (Math.random()-0.5)*8);
+            const cloudMat = new THREE.MeshStandardMaterial({
+                color: '#ffffff', transparent: true, opacity: 0.7, flatShading: true
+            });
+            const pCount = 6 + Math.floor(Math.random() * 10);
+            for (let j = 0; j < pCount; j++) {
+                const size = 10 + Math.random() * 20;
+                const part = new THREE.Mesh(new THREE.DodecahedronGeometry(size, 0), cloudMat);
+                part.position.set(j * (size * 0.8), (Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15);
+                part.rotation.set(Math.random(), Math.random(), 0);
                 cloud.add(part);
             }
-            cloud.position.set((Math.random()-0.5)*1200, 200 + Math.random()*100, -300 - Math.random()*400);
+            cloud.position.set((Math.random() - 0.5) * 2000, 180 + Math.random() * 150, -300 - Math.random() * 900);
             this.bgGroup.add(cloud);
-            this.clouds.push(cloud);
+            this.clouds.push({ mesh: cloud, speed: 0.1 + Math.random() * 0.3 });
         }
     }
 
     buildForeground() {
         const startX = -180;
-        const endX = 110;
-        const trailMat = new THREE.MeshStandardMaterial({ color: '#3b2518', roughness: 1.0 }); // Đất đường mòn sẫm
-        const postMat = new THREE.MeshStandardMaterial({ color: '#2a1a0a' });
+        const endX = 820;
+
+        // === ĐƯỜNG MÒN ĐẤT (Trail) - Liền mạch dạng Ruy Băng Rộng ===
+        const trailMat = new THREE.MeshStandardMaterial({
+            color: '#362419', roughness: 1.0, flatShading: true
+        });
         
-        for (let x = startX; x < endX; x += 4) {
+        const trailWidth = 12; // Đường siêu rộng
+        const segmentCount = Math.floor((endX - startX) / 2);
+        const positions = new Float32Array((segmentCount + 2) * 2 * 3);
+        const indices = [];
+
+        let vIdx = 0;
+        for (let x = startX; x <= endX + 2; x += 2) {
             const topo = this.getSpineTopography(x);
-
-            // Dải đất nền đường mòn (Tạo độ gồ ghề nhẹ cho đường mòn đất)
-            const trailGeo = new THREE.PlaneGeometry(6, 12);
-            const trail = new THREE.Mesh(trailGeo, trailMat);
-            trail.position.set(topo.x, topo.y + 0.05, topo.z);
-            trail.rotation.x = -Math.PI / 2;
-            const nextTopo = this.getSpineTopography(x + 1);
-            trail.rotation.y = Math.atan2(nextTopo.y - topo.y, nextTopo.x - topo.x);
-            this.fgGroup.add(trail);
+            const nextTopo = this.getSpineTopography(x + 2);
             
-            // KHÔNG CÒN THANH GỖ (Dọn dẹp mặt đường cho thoải)
+            // Vector hướng đi và pháp tuyến ngang
+            const dx = nextTopo.x - topo.x;
+            const dz = nextTopo.z - topo.z;
+            const len = Math.sqrt(dx*dx + dz*dz) || 1;
+            const nx = -dz / len;
+            const nz = dx / len;
 
-            if (Math.round(x) % 20 === 0) {
-                const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 2.5), postMat);
-                postL.position.set(x, topo.y + 0.8, topo.z + 9); 
-                this.fgGroup.add(postL);
-                const postR = postL.clone(); postR.position.z = topo.z - 9;
-                this.fgGroup.add(postR);
+            // Hai điểm hai bên lề đường
+            positions[vIdx*6 + 0] = topo.x + nx * (trailWidth / 2);
+            positions[vIdx*6 + 1] = topo.y + 0.15; // Nổi lên khỏi lớp đá
+            positions[vIdx*6 + 2] = topo.z + nz * (trailWidth / 2);
+
+            positions[vIdx*6 + 3] = topo.x - nx * (trailWidth / 2);
+            positions[vIdx*6 + 4] = topo.y + 0.15;
+            positions[vIdx*6 + 5] = topo.z - nz * (trailWidth / 2);
+
+            if (vIdx < segmentCount + 1) {
+                const i = vIdx * 2;
+                indices.push(i, i+1, i+2);
+                indices.push(i+1, i+3, i+2);
             }
+            vIdx++;
+        }
+        
+        const trailGeo = new THREE.BufferGeometry();
+        trailGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        trailGeo.setIndex(indices);
+        trailGeo.computeVertexNormals();
+        
+        const trail = new THREE.Mesh(trailGeo, trailMat);
+        trail.receiveShadow = true;
+        this.fgGroup.add(trail);
+
+        // === TẢNG ĐÁ DỌC ĐƯỜNG (Scenic boulders ven đường) ===
+        const scenicRockMat = new THREE.MeshStandardMaterial({ color: '#0a1825', roughness: 1.0, flatShading: true });
+        for (let x = startX; x < endX; x += 12) {
+            const topo = this.getSpineTopography(x + (Math.random()-0.5)*5);
+            // Đặt xen kẽ 2 bên đường
+            const sides = [1, -1];
+            sides.forEach(side => {
+                if (Math.random() > 0.35) { // 65% xuất hiện mỗi bên
+                    // Tăng spread lên tối thiểu 9 để cách xa hẳn lề đường 6 units
+                    const spread = 9 + Math.random() * 12;
+                    const rx = x + (Math.random()-0.5)*8;
+                    const rTopo = this.getSpineTopography(rx);
+                    const sz = rTopo.z + side * spread;
+                    const rz = this.getMountainTopography(rx, sz).height;
+                    const rock = new THREE.Group();
+                    // Tạo cụm đá (1-3 tảng)
+                    const pieceCount = 1 + Math.floor(Math.random() * 3);
+                    for(let p = 0; p < pieceCount; p++) {
+                        const gType = Math.random();
+                        let rGeo;
+                        if (gType > 0.6) rGeo = new THREE.IcosahedronGeometry(1, 0);
+                        else if (gType > 0.3) rGeo = new THREE.DodecahedronGeometry(1, 0);
+                        else rGeo = new THREE.TetrahedronGeometry(1, 0);
+                        const rMesh = new THREE.Mesh(rGeo, scenicRockMat);
+                        const pSize = 1.5 + Math.random() * 4;
+                        rMesh.scale.set(
+                            pSize*(0.7+Math.random()*0.6),
+                            pSize*(0.5+Math.random()*0.8),
+                            pSize*(0.7+Math.random()*0.6)
+                        );
+                        rMesh.position.set(
+                            (Math.random()-0.5)*3, pSize*0.3,
+                            (Math.random()-0.5)*3
+                        );
+                        rMesh.rotation.set(
+                            Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI
+                        );
+                        rock.add(rMesh);
+                    }
+                    rock.position.set(rx, rz - 0.5, sz);
+                    rock.castShadow = true;
+                    this.fgGroup.add(rock);
+                }
+            });
         }
     }
 
     buildAtmosphere() {
-        const particleCount = 400; 
+        const particleCount = 600; 
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(particleCount * 3);
         const pVel = new Float32Array(particleCount); 
@@ -653,6 +933,22 @@ class MountainJourney {
         });
         this.particles = new THREE.Points(pGeo, this.pMat);
         this.scene.add(this.particles);
+
+        // === HỆ THỐNG MƯA DYNAMIC ===
+        const rainCount = 1500;
+        const rainGeo = new THREE.BufferGeometry();
+        const rainPos = new Float32Array(rainCount * 3);
+        for (let i = 0; i < rainCount; i++) {
+            rainPos[i * 3] = (Math.random() - 0.5) * 800;
+            rainPos[i * 3 + 1] = Math.random() * 400;
+            rainPos[i * 3 + 2] = (Math.random() - 0.5) * 400;
+        }
+        rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
+        this.rainMat = new THREE.PointsMaterial({
+            color: '#a5f3fc', size: 0.6, transparent: true, opacity: 0
+        });
+        this.rain = new THREE.Points(rainGeo, this.rainMat);
+        this.scene.add(this.rain);
 
         // Lens Flare giả lập bằng Sprite
         const flareGeo = new THREE.RingGeometry(5, 7, 32);
@@ -754,47 +1050,44 @@ class MountainJourney {
         const time = currentTime;
 
         const startX = -180; 
-        const endX = 100;  
+        const endX = 810;  
         const charX = startX + (endX - startX) * this.scrollProgress;
         
         // 1. AVERAGE HEIGHT: Tránh giật xóc (Làm mượt bằng trung bình cộng 3 điểm lân cận)
         const topoCenter = this.getSpineTopography(charX); 
-        const topoFront = this.getSpineTopography(charX + 2);
-        const topoBack = this.getSpineTopography(charX - 2);
+        const topoFront = this.getSpineTopography(charX + 1.5);
+        const topoBack = this.getSpineTopography(charX - 1.5);
         
         const avgY = (topoCenter.y + topoFront.y + topoBack.y) / 3;
 
         // === CHIỀU CAO BÁM ĐẤT CHUẨN XÁC (Foot-to-Hip chain length) ===
-        // Thân dưới tỉ lệ người thật: Chân chiếm ~1/2 chiều cao.
-        // Khoảng cách từ Hông đến Mặt đất lý tưởng là ~6.0 unit (đã tính scale 1.3)
-        // Nhân vật đặt gốc tại ngực/bụng, nên charY cần cao hơn mặt đất ~8.0 unit.
-        const FOOT_TO_HIP = 8.0; 
+        // Khoảng cách thực tế từ hông (Y=0 local của Torso) xuống gót giày là đúng 7.6 unit
+        const FOOT_TO_HIP = 7.6; 
         const charZ = topoCenter.z;   
         const charY = avgY + FOOT_TO_HIP;
 
         this.characterGroup.position.set(charX, charY, charZ);
 
-        const topoP = this.getSpineTopography(charX + 3);
-        const topoM = this.getSpineTopography(charX - 3);
+        const topoP = this.getSpineTopography(charX + 2.5);
+        const topoM = this.getSpineTopography(charX - 2.5);
         
-        // ĐỘ DỐC CHUẨN TÍNH PITCH - nới giới hạn để trèo được vách đứng (~80 độ)
-        const rawSlope = Math.atan2(topoP.y - topoM.y, 6); 
-        const maxPitch = 1.4; // 80 độ max lên dốc
-        const minPitch = -1.0; // 57 độ max xuống dốc
+        // ĐỘ DỐC CHUẨN TÍNH PITCH
+        const rawSlope = Math.atan2(topoP.y - topoM.y, 5); 
+        const maxPitch = 1.0; // max ~57 độ
+        const minPitch = -1.0; 
         const slopeAngle = Math.max(minPitch, Math.min(maxPitch, rawSlope));
         this.characterGroup.rotation.x = slopeAngle; 
 
-        // YAW - cũng lấy khoảng rộng hơn để mượt
-        const yawAngle = Math.atan2(topoP.z - topoM.z, 6);
+        // YAW
+        const yawAngle = Math.atan2(topoP.z - topoM.z, 5);
         this.characterGroup.rotation.y = Math.PI / 2 - yawAngle;
 
         const cycle = this.scrollProgress * 250;
-        const t = currentTime; // alias cho time animation tuyệt đối
+        const t = currentTime;
 
         // === CLIMB MODE: 0 = ĐI BỘ, 1 = TRÈO VÁCH ĐỨNG ===
-        // Khi độ dốc > 25° -> bắt đầu chuyển sang tư thế trèo
-        const CLIMB_START = 20 * Math.PI / 180;
-        const CLIMB_FULL  = 32 * Math.PI / 180;
+        const CLIMB_START = 15 * Math.PI / 180;
+        const CLIMB_FULL  = 28 * Math.PI / 180;
         const climbMode = Math.max(0, Math.min(1, (rawSlope - CLIMB_START) / (CLIMB_FULL - CLIMB_START)));
         const walkMode  = 1 - climbMode;
 
@@ -803,15 +1096,12 @@ class MountainJourney {
         this.characterWrapper.position.y = bob;
 
         // === TORSO LEAN: NGẢ VỀ PHÍA TRƯỚC ===
-        // KHÔNG cộng dồn quá đà: 
-        // Khi đi bộ (walk): người đứng thẳng hơn (nghiêng ít)
-        // Khi trèo (climb): người bám song song vách (đã có slopeAngle lo)
         const leanTarget = 0.1 * walkMode + 0.1 * climbMode; 
         this.torso.rotation.x = leanTarget;
 
         // === ĐIỀU CHỈNH CHAR_Y ĐỂ KHÔNG CHÌM ĐẦU ===
-        // Khi dốc quá gắt, đẩy nhân vật lùi ra sau một chút (theo trục Y world) để ngực không chạm đá
-        const pushOut = Math.max(0, rawSlope * 4.0); 
+        // Khi lên dốc, nhích người ra để cẳng chân/mũi giày ko găm thẳng vào đất
+        const pushOut = Math.max(0, rawSlope * 1.2); 
         this.characterGroup.position.y += pushOut * climbMode;
 
         // === ĐẦU: NGƯỚC MẮT NHÌN ĐỈNH ===
@@ -910,8 +1200,8 @@ class MountainJourney {
         });
 
         this.clouds.forEach(c => {
-            c.position.x += 2 * dt; // Mây trôi chậm sang phải
-            if (c.position.x > 600) c.position.x = -600; // Loop mây
+            c.mesh.position.x += 2 * dt; // Mây trôi chậm sang phải
+            if (c.mesh.position.x > 600) c.mesh.position.x = -600; // Loop mây
         });
 
         // 2. CAMERA TRACKING KHÓA VÀO NHÂN VẬT 
@@ -952,7 +1242,40 @@ class MountainJourney {
         this.scene.fog.density = currS.fogDensity + (nextS.fogDensity - currS.fogDensity) * lerpFactor;
         
         this.dirLight.color.copy(currS.light).lerp(nextS.light, lerpFactor);
+        this.pMat.color.copy(currS.particleColor).lerp(nextS.particleColor, lerpFactor);
+
+        // === CẬP NHẬT MÂY TRÔI ===
+        this.clouds.forEach(c => {
+            c.mesh.position.x += c.speed * dt * 20;
+            if (c.mesh.position.x > 1500) c.mesh.position.x = -1500;
+        });
+
+        // === CẬP NHẬT THỜI TIẾT (Mưa / Tuyết / Nắng) ===
+        const currentSeason = this.seasons[Math.floor(this.scrollProgress * 3.9)];
+        const weather = currentSeason.weather;
         
+        if (weather === 'rainy' || weather === 'snowy') {
+            const rainPos = this.rain.geometry.attributes.position.array;
+            this.rainMat.opacity = Math.min(0.6, this.rainMat.opacity + dt);
+            for (let i = 0; i < rainPos.length / 3; i++) {
+                rainPos[i * 3 + 1] -= (weather === 'rainy' ? 120 : 40) * dt;
+                if (rainPos[i * 3 + 1] < 0) rainPos[i * 3 + 1] = 400;
+            }
+            this.rain.geometry.attributes.position.needsUpdate = true;
+            this.rainMat.color.set(weather === 'rainy' ? '#a5f3fc' : '#ffffff');
+            
+            // Lightning Flash (Mưa dông)
+            if (weather === 'rainy' && Math.random() > 0.992) {
+                this.scene.background.set('#ffffff');
+                setTimeout(() => {
+                    const phaseUpdate = Math.floor(this.scrollProgress * 3.9);
+                    this.scene.background.copy(this.seasons[phaseUpdate].bg);
+                }, 40);
+            }
+        } else {
+            this.rainMat.opacity = Math.max(0, this.rainMat.opacity - dt);
+        }
+
         const lightIntensity = seasonIndex === 3 ? 1.0 : 2.0;
         this.dirLight.intensity += (lightIntensity - this.dirLight.intensity) * 0.05;
 

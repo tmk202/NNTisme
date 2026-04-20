@@ -1,80 +1,200 @@
-Nguyễn Ngọc Tú
-Kỹ sư Phần mềm | Chuyên gia Xây dựng Hệ thống Tự động hóa & AI
-“I don’t just learn, I build to solve.”
-INFORMATION
-Ngày sinh Tháng 11, 1999
-Địa chỉ Nam Từ Liêm, Hà Nội, Vietnam
-Điện thoại 0965 533 716
-Email giadung8686@gmail.com
-SKILLS
-Lập trình Node.js, TypeScript, Python, JavaScript
-Frontend React, Vite, TailwindCSS, HTML, CSS
-Backend Express, FastAPI, REST APIs, WebSockets
-CSDL PostgreSQL, MySQL, Redis, Supabase
-DevOps Docker, PM2, Nginx, GitHub Actions, n8n
-Tư duy Tư duy hệ thống, Giải quyết vấn đề, Tự học nhanh
-WORK EXPERIENCE
-Nền tảng Giáo dục Trực tuyến TopUni & TopClass (HOCMAI Streamapp)
-Solo Dev
-Kỹ sư Full-Stack
-Xây dựng nền tảng học trực tuyến quy mô sản xuất tích hợp với LMS của HOCMAI, hỗ
-trợ hơn5000+ người dùng đồng thời với tương tác thời gian thực và quy trình học tập
-tự động.
-•Thiết kế hệ thống chat thời gian thực có khả năng mở rộng sử dụng Socket.IO vàRedis
-Pub/Sub .
-•Phát triển hệ thống bài tập tương tác với tính năng nộp bài thời gian thực và bảng xếp
-hạng trực tiếp.
-•Tối ưu hóa lược đồ MySQL xử lý hơn 1000 thao tác đồng thời với độ trễ dưới 50ms.
-•Triển khai hệ thống với PM2 cluster mode vàNginxđảm bảo zero-downtime.
-Tech Stack : Node.js, Express, MySQL, Redis, Socket.IO, PM2, Nginx
-Nền tảng học tập cộng tác thời gian thực Phòng Tự Học (HOCMAI)
-10/2025 – 11/2025
-Kỹ sư Full-Stack
-Xây dựng nền tảng học tập cộng tác (virtual co-working) phục vụ 1000+ người dùng
-đồng thời , hỗ trợ làm việc và học tập thời gian thực với video WebRTC.
-•Thiết kế backend mở rộng với Node.js ,PostgreSQL ,RedisvàSocket.IO đa instance.
-•Triển khai Mediasoup SFU cho video WebRTC, hỗ trợ chia sẻ màn hình và điều chỉnh
-bitrate động.
-•Phát triển các tính năng cộng tác thời gian thực: Pomodoro, quản lý task nhóm, chat toàn
-hệ thống.
-•Xây dựng hệ thống xác thực JWT, phân quyền vai trò (RBAC) và tích hợp SSO nội bộ.
-•Tối ưu hiệu năng, đạt độ trễ sự kiện thời gian thực dưới 100ms.
-•Triển khai production với CI/CD GitHub Actions vàNginx.
-Tech Stack : Node.js, Express, React, PostgreSQL, Redis, Socket.IO, Mediasoup, WebRTC,
-Nginx
-Nền tảng Tự động hóa Video bằng AI Solo Dev
-Kỹ sư Full-Stack & AI (HOCMAI)
-Thiết kế và triển khai hệ thống tự động hóa video AI chuyển đổi văn bản và hình ảnh thành
-video hoàn chỉnh với thuyết minh, phụ đề và hình ảnh đồng bộ.
-•Thiết kếkiến trúc microservices với hơn 15 dịch vụ bằng Node.js & Express .
-•Xây dựng lớp điều phối AI tích hợp Gemini,AssemblyAI ,OpenAI vàAusyncLab
-TTS.
-•Phát triển pipeline tự động hóa FFmpeg hiệu suất cao để xử lý âm thanh và hình ảnh.
-•Xây dựng engine phụ đề tùy chỉnh khớp chính xác timestamp sử dụng Levenshtein
-distance .
-Tech Stack : Node.js, Express, React, TypeScript, Python, FFmpeg, Gemini AI, AssemblyAI
-Hệ sinh thái tự động hóa nội dung end-to-end Solo Development
-Backend & Workflow Automation
-Xây dựng hệ thống tự động hóa nội dung hoàn chỉnh, tích hợp 10+ microservices với
-n8n, cho phép reup video Douyin chỉ với một click, tự động dịch, lồng tiếng và đăng tải —
-rút ngắn thời gian xử lý từ 2 giờ xuống 5 phút/video .
-•Thiết kế kiến trúc microservices bằng FastAPI cho tải video, xử lý media, TTS và
-automation CapCut.
-•Xây dựng service tải video bất đồng bộ với asyncio, tăng tốc độ download gấp 10 lần.
-•Phát triển pipeline xử lý video dựa trên FFmpeg : tách audio, STT, dịch, TTS, burn
-subtitle, chèn logo.
-•Tối ưu TTS với nhiều engine (Edge-TTS, gTTS, VieNeu-TTS), giảm thời gian tạo voice từ
-5 phút xuống 30 giây .
-•Phát triển Chrome Extension hỗ trợ chọn video Douyin và kích hoạt workflow tự động.
-•Orchestrate toàn bộ quy trình bằng n8n, xử lý retry, webhook và polling cho tác vụ dài.
-Tech Stack : Python, FastAPI, FFmpeg, asyncio, n8n, Whisper, Edge-TTS, Google Translate
-API, Chrome Extension
-EDUCATION
-Đại học Thủy Lợi 2018 - 2023
-Cử nhân Công nghệ Thông tin
-Tập trung vào Kỹ thuật Phần mềm, Cấu trúc dữ liệu và Giải thuật. Đồ án tốt nghiệp: Web
-quản lý bán hàng (Laravel).
-ACTIVITIES & RECOGNITION
-•Thành viên xuất sắc bộ phận / Team R&D — Tháng 8
-•Nhân viên xuất sắc Quý (Q3)
-•Tham gia tích cực các hoạt động tình nguyện và thi đấu bóng rổ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Template: Tech Professional CV (Optimized)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[paper=a4,fontsize=11pt]{scrartcl} 
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage[svgnames]{xcolor}
+\usepackage{geometry}
+    \geometry{top=2cm, bottom=2cm, left=2cm, right=2cm} 
+\usepackage{url}
+\usepackage{enumitem}
+
+\frenchspacing
+\pagestyle{empty}
+
+%%% Custom sectioning
+\usepackage{sectsty}
+\sectionfont{%
+    \usefont{OT1}{phv}{b}{n}%
+    \sectionrule{0pt}{0pt}{-5pt}{3pt}}
+
+%%% Macros
+\newlength{\spacebox}
+\settowidth{\spacebox}{8888888888}
+\newcommand{\sepspace}{\vspace*{1.5em}}
+
+\newcommand{\NewPart}[1]{
+    \pagebreak[3]
+    \vspace{0.5cm}
+    \noindent {\Large \uppercase{#1}} 
+    \vspace{0.1cm}
+    \hrule height 3pt % Đường gạch ngang này giờ sẽ gạch hết màn hình
+    \vspace{0.3cm}
+}
+
+\newcommand{\PersonalEntry}[2]{
+        \noindent\hangindent=2em\hangafter=0 
+        \parbox{\spacebox}{\textit{#1}}
+        \hspace{1.5em} #2 \par}
+
+\newcommand{\SkillsEntry}[2]{
+        \noindent\hangindent=2em\hangafter=0 
+        \parbox{\spacebox}{\textit{#1}}
+        \hspace{1.5em} #2 \par}    
+        
+\newcommand{\EducationEntry}[4]{
+        \noindent \textbf{#1} \hfill {\color{White}#2} \par
+        \noindent \textit{#3} \par
+        \noindent\hangindent=2em\hangafter=0 \small #4 
+        \normalsize \par \medskip}
+
+\newcommand{\WorkEntry}[4]{
+        \vspace{1em}
+        \noindent \textbf{#1} \hfill \colorbox{DeepSkyBlue}{\color{White}#2} \par
+        \noindent \textit{#3} \par
+        \noindent\hangindent=2em\hangafter=0 \small #4 
+        \normalsize \par \medskip}
+
+% --- BẮT ĐẦU NỘI DUNG VĂN BẢN TẠI ĐÂY ---
+\begin{document}
+
+\noindent
+\begin{minipage}[b]{0.45\textwidth}
+    \small \raggedright
+    \faGithub \ \href{https://github.com/tmk202}{Github} \\
+    \faLinkedin \ \href{https://linkedin.com/in/nguyen-tu-17599929a/}{LinkedIn} \\
+    \faGlobe \ \href{https://nntisme.vercel.app}{NNTisme}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.5\textwidth}
+    \raggedleft
+    {\Huge \textbf{Nguyen Ngoc Tu}} \\
+    {\large \textit{Software Engineer - AI Developer}} \\[0.2cm]
+    \small \textbf{“I don't just learn, I build to solve.”}
+\end{minipage}
+
+\vspace{0.8cm}
+
+%%% Information
+\NewPart{Information}{}
+\PersonalEntry{Birth}{22/11/1999}
+\PersonalEntry{Location}{Nam Tu Liem, Hanoi, Vietnam}
+\PersonalEntry{Phone}{0965 533 716}
+\PersonalEntry{Email}{giadung8686@gmail.com}
+
+%%% Skills
+\NewPart{Skills}{}
+\SkillsEntry{Programming}{Node.js, JavaScript}
+\SkillsEntry{Frontend}{React, TailwindCSS, HTML, CSS}
+\SkillsEntry{Backend}{Express, REST APIs, WebSockets}
+\SkillsEntry{Databases}{PostgreSQL, MySQL, Redis}
+\SkillsEntry{DevOps}{Docker, PM2, n8n}
+\SkillsEntry{Mindset}{System Thinking, Problem Solving, Rapid Self-Learning}
+
+%%% Work Experience
+\NewPart{Work Experience}{}
+
+\WorkEntry{Real-time Collaborative Study Platform (HOCMAI)}{Solo Development}{11/2025 - Present}{
+\begin{itemize}[noitemsep, topsep=5pt]
+    \item Built a virtual co-working platform supporting \textbf{1000+ concurrent users}.
+    \item Implemented custom \textbf{Mediasoup SFU} for WebRTC video streaming.
+    \item Built real-time collaboration: Pomodoro timers, shared tasks, and global chat.
+\end{itemize}
+\textbf{Tech Stack}: Node.js, Express, React, PostgreSQL, Redis, Socket.IO, Mediasoup
+}
+\WorkEntry{Live Streaming Education Platform TopUni \& TopClass (HOCMAI)}{Solo Development}{9/2025 - 11/2025}{
+\begin{itemize}[noitemsep, topsep=5pt]
+    \item Built a production-grade live streaming platform supporting \textbf{5000+ concurrent users}.
+    \item Designed scalable real-time chat using \textbf{Socket.IO} and \textbf{Redis Pub/Sub}.
+    \item Developed interactive quiz system with real-time submissions and leaderboards.
+\end{itemize}
+\textbf{Tech Stack}: Node.js, Express, MySQL, Redis, Socket.IO, PM2, Nginx
+}
+
+\WorkEntry{Multi-Platform Affiliate Automation System}{Solo Development}{10/2025 - Present}{
+\begin{itemize}[noitemsep, topsep=5pt]
+  \item Engineered a distributed crawling architecture using \textbf{Browser Extensions (Service Workers)} to bypass anti-bot measures and 403 errors across Shopee, Douyin, and Bilibili.
+  \item Developed a scalable core backend using \textbf{FastAPI} and \textbf{Supabase} to automate affiliate link generation and match products to pending video posts.
+  \item Implemented a robust \textbf{anti-shadowban ("Detox") system} with circuit breakers, dynamic keyword queues, and session cookie management for continuous extraction.
+  
+\end{itemize}
+\textbf{Tech Stack}: Python, FastAPI, JavaScript (Chrome Extensions), Supabase
+}
+
+
+\WorkEntry{TikTok Automation \& Growth Infrastructure}{Solo Development}{09/2025 - 04/2026}{
+\begin{itemize}[noitemsep, topsep=5pt]
+    \item Engineered a comprehensive automation suite for TikTok lifecycle management, including \textbf{bulk registration, account nurturing, and automated content publishing}.
+    \item Developed an anti-detection browser system using \textbf{Camoufox \& Playwright} to bypass sophisticated bot detection, TLS fingerprinting, and WebGL tracking.
+    \item Architected a resilient networking layer utilizing \textbf{DCOM IP rotation} (Mobile 4G/LTE Proxies) and custom SOCKS5 proxy servers to ensure high-velocity operations without IP bans.
+    \item Built a data-driven management system using \textbf{Supabase (PostgreSQL)} for real-time account state tracking and \textbf{Docker} for containerized, multi-threaded scaling.
+    \item Integrated an automated media pipeline for \textbf{dynamic video rendering} and scheduling, significantly reducing manual content overhead.
+\end{itemize}
+\textbf{Tech Stack}: Python, Playwright, Camoufox, Asyncio, Supabase, Docker, DCOM (Mobile Proxy Box)
+}
+\WorkEntry{Autonomous AI-Video Synthesis Engine (Open-Source Orchestration)}{Solo Development}{6/2025 - Present}{
+\begin{itemize}[noitemsep, topsep=5pt]
+  \item Architected an \textbf{automated video production factory} by orchestrating \textbf{Kestra (OSS)}, \textbf{FFmpeg}, and \textbf{Python} to transform raw data into high-quality short-form content.
+  \item Developed complex \textbf{media transformation logic}: implementing dynamic scene assembly, automated subtitling, and multi-layer audio-visual synchronization using \textbf{MoviePy/OpenCV}.
+  \item Integrated state-of-the-art \textbf{Open Source Neural TTS} (VieNeu-TTS) and \textbf{Large Language Models} to automate the entire creative workflow from scriptwriting to final rendering.
+  \item Optimized throughput with \textbf{NVIDIA CUDA acceleration}, implementing parallel worker queues and resource-locking mechanisms to manage high-VRAM video processing tasks.
+\end{itemize}
+\textbf{Tech Stack}: Python, Kestra, FFmpeg, MoviePy, NVIDIA CUDA, Neural TTS, Streamlit, Docker
+}
+
+\WorkEntry{AI-Powered Video Automation Platform (HOCMAI)}{Solo Development}{6/2025 - 8/2025}{
+\begin{itemize}[noitemsep, topsep=5pt]
+  \item Designed \textbf{microservices architecture} (15+ services) using \textbf{Node.js \& Express}.
+  \item Integrated \textbf{Gemini}, \textbf{AssemblyAI}, and \textbf{OpenAI} for AI orchestration.
+  \item Developed high-performance \textbf{FFmpeg pipeline} for automated video editing.
+\end{itemize}
+\textbf{Tech Stack}: Node.js, Express, React, TypeScript, Python, FFmpeg, Gemini AI
+}
+
+\WorkEntry{Advanced 3D Web Experience \& Creative Development}{Solo Development}{2024 - Present}{
+\begin{itemize}[noitemsep, topsep=5pt]
+  \item Engineered high-performance \textbf{3D Scrollytelling} and \textbf{Gamified interfaces} using \textbf{Three.js} and \textbf{React Three Fiber}.
+  \item Implemented \textbf{Procedural Generation} (Perlin Noise) for terrain and \textbf{Inverse Kinematics} for realistic character animations.
+  \item Developed custom \textbf{Shader effects} and \textbf{Particle systems} to create immersive weather and cinematic lighting environments.
+  \item Optimized 3D scenes for web performance, achieving stable \textbf{60FPS} through \textbf{Instanced Rendering} and asset-loading strategies.
+\end{itemize}
+\textbf{Tech Stack}: Three.js, React Three Fiber (R3F), GSAP, HLSL Shaders, TypeScript, JavaScript
+}
+\WorkEntry{E-commerce Ventures \& Digital Growth}{Founder / Marketing Leader}{2019 - 2024}{
+\begin{itemize}[noitemsep, topsep=5pt]
+    \item Founded and bootstrapped multiple online brands, scaling operations across \textbf{Shopee, TikTok, and Facebook} to reach \textbf{billions of VND in annual gross revenue}.
+    \item Directed a multi-disciplinary team of \textbf{15 members}, managing everything from brand strategy and performance marketing to supply chain and customer retention.
+    \item Optimized marketing efficiency by analyzing conversion data and consumer behavior, consistently delivering high-impact growth for self-funded business models.
+    \item Identified operational bottlenecks and implemented automated workflows, driving the transition into software development to build high-performance business tools.
+    \item Applied a \textbf{lean startup methodology} and a strong market-driven approach to ensure products were built for scalability and real-world efficiency.
+\end{itemize}
+\textbf{Growth Stack}: Shopee/TikTok Ads Manager, Facebook Business Suite, Data Analytics, CRM, Operations Management
+}
+
+
+
+%%% Education
+\NewPart{Education}{}
+\WorkEntry{Water Resource University}{B.S. in Information Technology}{2018 - 2023}{
+\begin{itemize}[noitemsep, topsep=2pt]
+ \item Focused on Software Engineering, Data Structures. Final project: Sales Management Web App (Laravel).
+ \end{itemize}
+}
+
+%%% Activities
+\NewPart{Activities \& Recognition}{}
+\begin{itemize}[noitemsep]
+  \item \textbf{Completed Military Service}
+  \item \textbf{Employee of the Quarter (Q3)}
+  \item \textbf{Outstanding Department / R\&D Team Member}
+  \item \textbf{Community \& Sports}
+\end{itemize}
+
+
+\end{document}
