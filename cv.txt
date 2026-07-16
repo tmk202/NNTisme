@@ -105,6 +105,16 @@
 %%% Work Experience
 \NewPart{Work Experience}{}
 
+\WorkEntry{Ultimate OS — AI Agent Platform}{Solo Development}{2025 - Present}{
+\begin{itemize}[noitemsep, topsep=5pt]
+    \item Built a \textbf{centralized multi-platform chat hub} integrating messaging channels with automated order-status handling and agent-powered chatbots.
+    \item Designed \textbf{Ultimate OS} as an AI agent platform combining \textbf{workflows, tools, MCP integrations, and multi-agent orchestration}.
+    \item Enabled end-to-end agentic automation from inbound chat through tools/MCP to order handling and customer replies.
+\end{itemize}
+\textbf{Tech Stack}: Platform, Workflow Engine, Tool Registry, MCP, AI Agents
+\textbf{Demo}: https://os.ultimatesup.com/
+}
+
 \WorkEntry{Real-time Collaborative Study Platform (HOCMAI)}{Solo Development}{11/2025 - Present}{
 \begin{itemize}[noitemsep, topsep=5pt]
     \item Built a virtual co-working platform supporting \textbf{1000+ concurrent users}.

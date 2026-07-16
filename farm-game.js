@@ -7,11 +7,12 @@
  */
 
 const DATA_CV = [
-    { id: 1, cost: 0, type: 'PROJECT', title: "HOCMAI - Streamapp", year: "2023 - Nay", desc: "Nền tảng học trực tuyến 5.000+ PCU...", tags: ["Node.js", "Redis"] },
-    { id: 2, cost: 20, type: 'PROJECT', title: "Virtual Co-Working", year: "2024", desc: "SFU Mediasoup kiến trúc video đa luồng...", tags: ["WebRTC", "FastAPI"] },
-    { id: 3, cost: 50, type: 'SKILL', title: "AI Chatbot RAG", year: "2024", desc: "Dựng hệ sinh thái Chatbot tự động n8n mượt mà...", tags: ["LLM", "n8n"] },
-    { id: 4, cost: 100, type: 'SKILL', title: "Automation Farm", year: "2025", desc: "Automation Tool cho MXH, chống ban clone...", tags: ["Puppeteer", "Proxy"] },
-    { id: 5, cost: 200, type: 'PROJECT', title: "Affiliate Auto", year: "2025", desc: "Hệ thống crawl data đa nền tảng bypass anti-bot...", tags: ["FastAPI", "Extensions"] }
+    { id: 1, cost: 0, type: 'PROJECT', title: "Ultimate OS", year: "2025 - Nay", desc: "Nền tảng AI agent: platform + workflow + tool + MCP + agent; chat tập trung & automation đơn hàng...", tags: ["Agent", "MCP", "Workflow"] },
+    { id: 2, cost: 20, type: 'PROJECT', title: "HOCMAI - Streamapp", year: "2023 - Nay", desc: "Nền tảng học trực tuyến 5.000+ PCU...", tags: ["Node.js", "Redis"] },
+    { id: 3, cost: 50, type: 'PROJECT', title: "Virtual Co-Working", year: "2024", desc: "SFU Mediasoup kiến trúc video đa luồng...", tags: ["WebRTC", "FastAPI"] },
+    { id: 4, cost: 100, type: 'SKILL', title: "AI Chatbot RAG", year: "2024", desc: "Dựng hệ sinh thái Chatbot tự động n8n mượt mà...", tags: ["LLM", "n8n"] },
+    { id: 5, cost: 200, type: 'SKILL', title: "Automation Farm", year: "2025", desc: "Automation Tool cho MXH, chống ban clone...", tags: ["Puppeteer", "Proxy"] },
+    { id: 6, cost: 350, type: 'PROJECT', title: "Affiliate Auto", year: "2025", desc: "Hệ thống crawl data đa nền tảng bypass anti-bot...", tags: ["FastAPI", "Extensions"] }
 ];
 
 class FarmIsometricGame {
